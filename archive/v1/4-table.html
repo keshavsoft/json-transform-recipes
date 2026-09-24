@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>json-to-tag-table — Interactive Table & Drilldown Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/gh/keshavsoft/json-to-tag-table@main/docs/dist/v6/min.js"></script>
+  <style>
+    :root {
+      --bg: #070b14;
+      --card-bg: rgba(16, 24, 40, 0.85);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #fbbf24;
+      --accent-glow: rgba(251, 191, 36, 0.25);
+      --accent-blue: #38bdf8;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --code-bg: #030712;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(251, 191, 36, 0.12), transparent),
+        radial-gradient(ellipse 60% 40% at 100% 50%, rgba(56, 189, 248, 0.08), transparent);
+    }
+
+    /* Unified Story Nav */
+    .story-global-nav {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(7, 11, 20, 0.92);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 0.65rem 1.5rem;
+    }
+
+    .story-nav-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .story-nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .story-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: rgba(251, 191, 36, 0.15);
+      color: var(--accent);
+      padding: 0.2rem 0.55rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(251, 191, 36, 0.3);
+    }
+
+    .brand-title {
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+    }
+
+    .story-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .story-nav-link {
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .story-nav-link:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .story-nav-link.active {
+      color: var(--accent);
+      background: rgba(251, 191, 36, 0.15);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: 9999px;
+      background: rgba(251, 191, 36, 0.12);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 720px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 900px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      margin-bottom: 2rem;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    button {
+      background: var(--accent);
+      color: #04101e;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      box-shadow: 0 0 15px var(--accent-glow);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: none;
+    }
+
+    textarea {
+      width: 100%;
+      height: 280px;
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 1rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      resize: vertical;
+      outline: none;
+      line-height: 1.5;
+    }
+
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    /* Table Styles */
+    #tableDisplayArea {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      background: var(--code-bg);
+      padding: 1rem;
+      min-height: 200px;
+    }
+
+    #tableDisplayArea table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      color: #e2e8f0;
+    }
+
+    #tableDisplayArea th {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--accent);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: left;
+    }
+
+    #tableDisplayArea td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    #tableDisplayArea tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .drilldown-btn {
+      background: rgba(251, 191, 36, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .drilldown-btn:hover {
+      background: rgba(251, 191, 36, 0.3);
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1.5rem;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      max-width: 700px;
+      width: 100%;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+      overflow-y: auto;
+    }
+
+    .doc-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 2rem;
+    }
+
+    .doc-section h2 {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      color: #fff;
+    }
+
+    .doc-section p {
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Unified Story Global Nav -->
+  <nav class="story-global-nav">
+    <div class="story-nav-inner">
+      <div class="story-nav-brand">
+        <span class="story-pill">Recipe 4</span>
+        <a href="index.html" class="brand-title">JSON Transform Suite</a>
+      </div>
+      <div class="story-nav-links">
+        <a href="index.html" class="story-nav-link">🚀 Workbench</a>
+        <a href="1-select.html" class="story-nav-link">⚡ 1. Select</a>
+        <a href="2-rename.html" class="story-nav-link">🏷️ 2. Rename</a>
+        <a href="3-map.html" class="story-nav-link">🗺️ 3. Map</a>
+        <a href="4-table.html" class="story-nav-link active">📊 4. Table UI</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <header>
+      <div class="badge">
+        <span>📊</span> Step 4: Visual Table & Drilldown Explorer
+      </div>
+      <h1>json-to-tag-table</h1>
+      <p class="subtitle">
+        Declarative HTML table renderer for nested JSON records. Turns complex hierarchical datasets into interactive web tables with child-collection expansion.
+      </p>
+    </header>
+
+    <!-- Interactive Editor -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Structured JSON Data Input</span>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn-secondary" id="btnPreset1">Invoices Dataset</button>
+          <button class="btn-secondary" id="btnPreset2">Logistics Dataset</button>
+          <button id="btnRender">⚡ Render Table</button>
+        </div>
+      </div>
+      <textarea id="tableDataInput" spellcheck="false"></textarea>
+    </div>
+
+    <!-- Table Output Display -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title" style="color: var(--accent);">Live Rendered Table View</span>
+        <span id="statRenderTime" style="color: var(--text-muted); font-size: 0.85rem;"></span>
+      </div>
+      <div id="tableDisplayArea"></div>
+    </div>
+
+    <!-- Documentation Section -->
+    <div class="doc-section">
+      <h2>Quick API Guide</h2>
+      <p>Load the browser bundle directly from jsDelivr CDN:</p>
+      <div class="code-block">&lt;script src="https://cdn.jsdelivr.net/gh/keshavsoft/json-to-tag-table@main/docs/dist/v6/min.js"&gt;&lt;/script&gt;</div>
+      
+      <p>Instantiate and render into any target container:</p>
+      <div class="code-block">const table = new globalThis.ks.jsonToTagTable.Table({
+  theme: "default",
+  data: myTransformedData
+});
+
+table.methods.render({
+  targetHtmlId: "myContainerId",
+  inSkeletonType: "tableSimple"
+});</div>
+    </div>
+  </div>
+
+  <!-- Modal for Nested Inspection -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="color: #fff; font-size: 1.1rem;" id="modalTitle">Sub-Collection Drilldown</h3>
+        <button class="btn-secondary" id="btnCloseModal">✕ Close</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    const sampleInvoices = [
+      {
+        "invoiceNo": 1001,
+        "date": "2026-09-24",
+        "customer": "Alpha Global Industries",
+        "status": "PAID",
+        "totalAmount": 6910.00,
+        "items": [
+          { "product": "Industrial Power Cable", "qty": 50, "rate": 120.00, "total": 6000.00 },
+          { "product": "Reinforced Fiber Mesh", "qty": 20, "rate": 45.50, "total": 910.00 }
+        ]
+      },
+      {
+        "invoiceNo": 1002,
+        "date": "2026-09-24",
+        "customer": "Zenith Tech Systems",
+        "status": "PENDING",
+        "totalAmount": 2450.00,
+        "items": [
+          { "product": "Hydraulic Coupling V2", "qty": 10, "rate": 245.00, "total": 2450.00 }
+        ]
+      }
+    ];
+
+    const sampleLogistics = [
+      {
+        "waybill": "WB-88190",
+        "origin": "Central Warehouse Hub A",
+        "destination": "Metro Distribution Depot",
+        "driver": "Marcus Vance",
+        "containers": [
+          { "containerId": "C-901", "weightKg": 4200, "seal": "SL-9941" },
+          { "containerId": "C-902", "weightKg": 3150, "seal": "SL-9942" }
+        ]
+      }
+    ];
+
+    const tableDataInput = document.getElementById("tableDataInput");
+    const tableDisplayArea = document.getElementById("tableDisplayArea");
+    const statRenderTime = document.getElementById("statRenderTime");
+    const modalOverlay = document.getElementById("modalOverlay");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalBody = document.getElementById("modalBody");
+    const btnCloseModal = document.getElementById("btnCloseModal");
+
+    tableDataInput.value = JSON.stringify(sampleInvoices, null, 2);
+
+    function renderTable() {
+      tableDisplayArea.innerHTML = "";
+      const t0 = performance.now();
+
+      try {
+        const raw = JSON.parse(tableDataInput.value);
+        const data = Array.isArray(raw) ? raw : [raw];
+
+        if (data.length === 0) {
+          tableDisplayArea.innerHTML = "<p style='color: var(--text-muted);'>No data to display.</p>";
+          return;
+        }
+
+        // Try CDN Table constructor if available
+        if (typeof globalThis.ks?.jsonToTagTable?.Table === "function") {
+          try {
+            const table = new globalThis.ks.jsonToTagTable.Table({
+              theme: "default",
+              data
+            });
+            table.methods.render({
+              targetHtmlId: "tableDisplayArea",
+              inSkeletonType: "tableSimple"
+            });
+          } catch (e) {
+            renderInteractiveTable(data, tableDisplayArea);
+          }
+        } else {
+          renderInteractiveTable(data, tableDisplayArea);
+        }
+
+        const t1 = performance.now();
+        statRenderTime.textContent = `Rendered in ${(t1 - t0).toFixed(2)} ms`;
+      } catch (err) {
+        tableDisplayArea.innerHTML = `<p style="color: #f87171;">❌ Error parsing JSON: ${err.message}</p>`;
+      }
+    }
+
+    function renderInteractiveTable(data, container) {
+      const keys = Object.keys(data[0]);
+      let html = "<table><thead><tr>";
+      keys.forEach(k => html += `<th>${k}</th>`);
+      html += "</tr></thead><tbody>";
+
+      data.forEach((row, rowIdx) => {
+        html += "<tr>";
+        keys.forEach(k => {
+          const val = row[k];
+          if (Array.isArray(val)) {
+            html += `<td><button class="drilldown-btn" onclick="openDrilldown('${k}', ${rowIdx})">Inspect (${val.length} items)</button></td>`;
+          } else if (typeof val === "object" && val !== null) {
+            html += `<td><button class="drilldown-btn" onclick="openObjectDrilldown('${k}', ${rowIdx})">View Details</button></td>`;
+          } else {
+            html += `<td>${val ?? ""}</td>`;
+          }
+        });
+        html += "</tr>";
+      });
+
+      html += "</tbody></table>";
+      container.innerHTML = html;
+    }
+
+    window.openDrilldown = (key, rowIdx) => {
+      try {
+        const data = JSON.parse(tableDataInput.value);
+        const arr = data[rowIdx][key];
+        modalTitle.textContent = `${key} (Row ${rowIdx + 1})`;
+        modalBody.innerHTML = "";
+
+        if (Array.isArray(arr) && arr.length > 0) {
+          const subKeys = Object.keys(arr[0]);
+          let html = "<table><thead><tr>";
+          subKeys.forEach(sk => html += `<th>${sk}</th>`);
+          html += "</tr></thead><tbody>";
+          arr.forEach(subRow => {
+            html += "<tr>";
+            subKeys.forEach(sk => html += `<td>${subRow[sk] ?? ""}</td>`);
+            html += "</tr>";
+          });
+          html += "</tbody></table>";
+          modalBody.innerHTML = html;
+        } else {
+          modalBody.innerHTML = `<pre style="background: var(--code-bg); padding: 1rem; border-radius: 8px;">${JSON.stringify(arr, null, 2)}</pre>`;
+        }
+        modalOverlay.style.display = "flex";
+      } catch (e) {
+        alert(e.message);
+      }
+    };
+
+    window.openObjectDrilldown = (key, rowIdx) => {
+      try {
+        const data = JSON.parse(tableDataInput.value);
+        const obj = data[rowIdx][key];
+        modalTitle.textContent = `${key} (Row ${rowIdx + 1})`;
+        modalBody.innerHTML = `<pre style="background: var(--code-bg); padding: 1rem; border-radius: 8px;">${JSON.stringify(obj, null, 2)}</pre>`;
+        modalOverlay.style.display = "flex";
+      } catch (e) {
+        alert(e.message);
+      }
+    };
+
+    btnCloseModal.addEventListener("click", () => modalOverlay.style.display = "none");
+    modalOverlay.addEventListener("click", (e) => {
+      if (e.target === modalOverlay) modalOverlay.style.display = "none";
+    });
+
+    document.getElementById("btnPreset1").addEventListener("click", () => {
+      tableDataInput.value = JSON.stringify(sampleInvoices, null, 2);
+      renderTable();
+    });
+
+    document.getElementById("btnPreset2").addEventListener("click", () => {
+      tableDataInput.value = JSON.stringify(sampleLogistics, null, 2);
+      renderTable();
+    });
+
+    document.getElementById("btnRender").addEventListener("click", renderTable);
+
+    // Initial render
+    renderTable();
+  </script>
+</body>
+</html>

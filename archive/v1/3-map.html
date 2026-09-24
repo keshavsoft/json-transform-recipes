@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>map-json-by-json — Deep-Dive Contract Mapping Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(18, 25, 43, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #10b981;
+      --accent-glow: rgba(16, 185, 129, 0.25);
+      --accent-2: #6366f1;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --code-bg: #040711;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(16, 185, 129, 0.15), transparent),
+        radial-gradient(ellipse 60% 40% at 0% 50%, rgba(99, 102, 241, 0.08), transparent);
+    }
+
+    /* Unified Story Nav */
+    .story-global-nav {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(9, 13, 22, 0.92);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 0.65rem 1.5rem;
+    }
+
+    .story-nav-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .story-nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .story-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent);
+      padding: 0.2rem 0.55rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .brand-title {
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+    }
+
+    .story-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .story-nav-link {
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .story-nav-link:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .story-nav-link.active {
+      color: var(--accent);
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: 9999px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 720px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    button {
+      background: var(--accent);
+      color: #04101e;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      box-shadow: 0 0 15px var(--accent-glow);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: none;
+    }
+
+    textarea, pre {
+      width: 100%;
+      height: 380px;
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 1rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      resize: vertical;
+      outline: none;
+      line-height: 1.5;
+      overflow-y: auto;
+    }
+
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    pre {
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .stats-bar {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .doc-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-top: 3rem;
+    }
+
+    .doc-section h2 {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      color: #fff;
+    }
+
+    .doc-section p {
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Unified Story Global Nav -->
+  <nav class="story-global-nav">
+    <div class="story-nav-inner">
+      <div class="story-nav-brand">
+        <span class="story-pill">Recipe 3</span>
+        <a href="index.html" class="brand-title">JSON Transform Suite</a>
+      </div>
+      <div class="story-nav-links">
+        <a href="index.html" class="story-nav-link">🚀 Workbench</a>
+        <a href="1-select.html" class="story-nav-link">⚡ 1. Select</a>
+        <a href="2-rename.html" class="story-nav-link">🏷️ 2. Rename</a>
+        <a href="3-map.html" class="story-nav-link active">🗺️ 3. Map</a>
+        <a href="4-table.html" class="story-nav-link">📊 4. Table UI</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <header>
+      <div class="badge">
+        <span>🗺️</span> Step 3: Template-Driven Contract Mapping
+      </div>
+      <h1>map-json-by-json</h1>
+      <p class="subtitle">
+        Reshape incoming raw structures into clean, contract-driven output objects. Target template is the source of truth.
+      </p>
+    </header>
+
+    <!-- Editors Grid -->
+    <div class="grid">
+      <!-- Target Template -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">1. Target Template Spec (Source of Truth)</span>
+          <div>
+            <button class="btn-secondary" id="btnResetTemplate">Reset Template</button>
+          </div>
+        </div>
+        <textarea id="inputTemplate" spellcheck="false"></textarea>
+      </div>
+
+      <!-- Source Data -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">2. Raw Source Data</span>
+          <div>
+            <button class="btn-secondary" id="btnResetData">Reset Data</button>
+          </div>
+        </div>
+        <textarea id="inputData" spellcheck="false"></textarea>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div style="text-align: center; margin-bottom: 2rem; display: flex; justify-content: center; gap: 1rem;">
+      <button id="btnTransform" style="font-size: 1.05rem; padding: 0.8rem 2.2rem;">
+        ⚡ Run mapJson()
+      </button>
+      <a href="4-table.html" style="text-decoration: none;">
+        <button class="btn-secondary" style="font-size: 1.05rem; padding: 0.8rem 1.8rem;">
+          Next: Recipe 4 (Table UI) →
+        </button>
+      </a>
+    </div>
+
+    <!-- Output -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title" style="color: var(--accent);">
+          3. Reshaped Output JSON
+        </span>
+        <div>
+          <button class="btn-secondary" id="btnCopyOutput">📋 Copy JSON</button>
+        </div>
+      </div>
+      <pre id="outputJson"></pre>
+      <div class="stats-bar">
+        <span>Execution Time: <strong id="statTime">0 ms</strong></span>
+        <span>Output Records: <strong id="statCount">0</strong></span>
+      </div>
+    </div>
+
+    <!-- Documentation Section -->
+    <div class="doc-section">
+      <h2>Quick API Guide</h2>
+      <p>Install via npm:</p>
+      <div class="code-block">npm install map-json-by-json</div>
+      
+      <p>Define your desired output template and map raw data into it:</p>
+      <div class="code-block">import { mapJson } from "https://cdn.jsdelivr.net/gh/keshavsoft/map-json-by-json@main/src/v1/map.js";
+
+const template = {
+  orderId: "ORDER_NUMBER",
+  orderDate: "TRANSACTION_DATE",
+  lineItems: {
+    $from: "ORDER_ITEMS_COLLECTION",
+    product: "ITEM_NAME",
+    subtotal: "TOTAL_AMOUNT"
+  }
+};
+
+const clean = mapJson(template, rawData);</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mapJson } from "https://cdn.jsdelivr.net/gh/keshavsoft/map-json-by-json@main/src/v1/map.js";
+
+    const defaultTemplate = {
+      invoice: "INVOICE_NUMBER",
+      date: "TRANSACTION_DATE",
+      client: {
+        company: "CUSTOMER_NAME"
+      },
+      items: {
+        $from: "ALL_INVENTORY_ENTRIES_LIST",
+        product: "STOCK_ITEM_NAME",
+        rate: "UNIT_RATE",
+        total: "TOTAL_AMOUNT",
+        allocations: {
+          $from: "BATCH_ALLOCATIONS_LIST",
+          lot: "BATCH_ID",
+          quantity: "ALLOCATED_QTY"
+        }
+      }
+    };
+
+    const defaultData = [
+      {
+        "INVOICE_NUMBER": 1001,
+        "TRANSACTION_DATE": "2026-09-24",
+        "CUSTOMER_NAME": "Alpha Global Industries",
+        "ALL_INVENTORY_ENTRIES_LIST": [
+          {
+            "STOCK_ITEM_NAME": "Industrial Power Cable",
+            "UNIT_RATE": 120.0,
+            "TOTAL_AMOUNT": 6000.0,
+            "BATCH_ALLOCATIONS_LIST": [
+              { "BATCH_ID": "LOT-901", "ALLOCATED_QTY": 50 }
+            ]
+          },
+          {
+            "STOCK_ITEM_NAME": "Reinforced Mesh Roll",
+            "UNIT_RATE": 45.5,
+            "TOTAL_AMOUNT": 910.0,
+            "BATCH_ALLOCATIONS_LIST": [
+              { "BATCH_ID": "LOT-330", "ALLOCATED_QTY": 20 }
+            ]
+          }
+        ]
+      }
+    ];
+
+    const inputTemplateEl = document.getElementById("inputTemplate");
+    const inputDataEl = document.getElementById("inputData");
+    const outputJsonEl = document.getElementById("outputJson");
+    const statTimeEl = document.getElementById("statTime");
+    const statCountEl = document.getElementById("statCount");
+
+    inputTemplateEl.value = JSON.stringify(defaultTemplate, null, 2);
+    inputDataEl.value = JSON.stringify(defaultData, null, 2);
+
+    function runTransform() {
+      try {
+        const template = JSON.parse(inputTemplateEl.value);
+        const data = JSON.parse(inputDataEl.value);
+
+        const t0 = performance.now();
+        const result = mapJson(template, data);
+        const t1 = performance.now();
+
+        outputJsonEl.textContent = JSON.stringify(result, null, 2);
+        statTimeEl.textContent = `${(t1 - t0).toFixed(2)} ms`;
+        statCountEl.textContent = Array.isArray(result) ? result.length : 1;
+      } catch (err) {
+        outputJsonEl.textContent = `❌ Error: ${err.message}`;
+        statTimeEl.textContent = "-";
+      }
+    }
+
+    document.getElementById("btnTransform").addEventListener("click", runTransform);
+
+    document.getElementById("btnResetTemplate").addEventListener("click", () => {
+      inputTemplateEl.value = JSON.stringify(defaultTemplate, null, 2);
+      runTransform();
+    });
+
+    document.getElementById("btnResetData").addEventListener("click", () => {
+      inputDataEl.value = JSON.stringify(defaultData, null, 2);
+      runTransform();
+    });
+
+    document.getElementById("btnCopyOutput").addEventListener("click", () => {
+      navigator.clipboard.writeText(outputJsonEl.textContent).then(() => {
+        alert("Transformed JSON copied to clipboard!");
+      });
+    });
+
+    // Run initially
+    runTransform();
+  </script>
+</body>
+</html>

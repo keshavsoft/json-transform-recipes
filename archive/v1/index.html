@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON Transformation Recipes — Interactive Browser Workbench</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- CDN Scripts for Browser Bundles -->
+  <script src="https://cdn.jsdelivr.net/gh/keshavsoft/select-json-by-json@main/docs/dist/min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/keshavsoft/json-to-tag-table@main/docs/dist/v6/min.js"></script>
+
+  <style>
+    :root {
+      --bg: #070a12;
+      --card-bg: rgba(16, 24, 40, 0.85);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --accent-green: #34d399;
+      --accent-purple: #818cf8;
+      --accent-amber: #fbbf24;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --code-bg: #030712;
+      --border-subtle: rgba(255, 255, 255, 0.06);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      padding: 2rem 1.5rem;
+      background-image:
+        radial-gradient(ellipse 90% 50% at 50% -10%, rgba(56, 189, 248, 0.12), transparent),
+        radial-gradient(ellipse 60% 40% at 100% 50%, rgba(129, 140, 248, 0.07), transparent),
+        radial-gradient(ellipse 60% 40% at 0% 80%, rgba(52, 211, 153, 0.07), transparent);
+    }
+
+    .container { max-width: 1400px; margin: 0 auto; }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: 9999px;
+      background: rgba(52, 211, 153, 0.12);
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      color: var(--accent-green);
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 10px var(--accent-green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 840px;
+      margin: 0 auto 1.5rem auto;
+      line-height: 1.6;
+    }
+
+    .repo-links {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .repo-link {
+      padding: 0.4rem 0.85rem;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .repo-link:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: var(--text);
+      border-color: var(--accent);
+    }
+
+    /* Pipeline Architecture Ribbon */
+    .pipeline-ribbon {
+      display: flex;
+      justify-content: space-between;
+      align-items: stretch;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+    }
+
+    .pipe-step {
+      flex: 1;
+      min-width: 200px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1rem;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .pipe-step:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .pipe-step.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 20px var(--accent-glow);
+      background: rgba(22, 35, 60, 0.9);
+    }
+
+    .pipe-step-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin-bottom: 0.25rem;
+    }
+
+    .pipe-step-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .pipe-step-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* Preset Toolbar */
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 0.85rem 1.25rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .preset-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .preset-label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .preset-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-subtle);
+      color: var(--text);
+      padding: 0.45rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .preset-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .preset-btn.active {
+      background: var(--accent);
+      color: #04101e;
+      border-color: var(--accent);
+    }
+
+    .btn-run-all {
+      background: linear-gradient(135deg, var(--accent) 0%, #0284c7 100%);
+      color: #04101e;
+      border: none;
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 0.92rem;
+      padding: 0.65rem 1.6rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 0 20px var(--accent-glow);
+      transition: all 0.2s ease;
+    }
+
+    .btn-run-all:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(56, 189, 248, 0.4);
+    }
+
+    /* Main Grid */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.75rem;
+      backdrop-filter: blur(16px);
+      margin-bottom: 2rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 900px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .editor-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.6rem;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .tag-badge {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-family: 'Fira Code', monospace;
+    }
+
+    textarea, pre {
+      width: 100%;
+      height: 380px;
+      background: var(--code-bg);
+      color: #38bdf8;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 1rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      overflow: auto;
+      white-space: pre;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    textarea {
+      color: #f1f5f9;
+      resize: vertical;
+    }
+
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .btn-action {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      border: 1px solid var(--border-subtle);
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-action:hover {
+      background: rgba(255, 255, 255, 0.18);
+      color: #ffffff;
+    }
+
+    /* Table Container Styling */
+    #tableContainer {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 1rem;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      background: var(--code-bg);
+      padding: 1rem;
+    }
+
+    /* Override json-to-tag-table styles for dark theme integration */
+    #tableContainer table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      color: #e2e8f0;
+    }
+
+    #tableContainer th {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--accent);
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+    }
+
+    #tableContainer td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    #tableContainer tr:hover td {
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    #tableContainer button {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    #tableContainer button:hover {
+      background: var(--accent);
+      color: #04101e;
+    }
+
+    .stats-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    /* Unified Story Nav */
+    .story-global-nav {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(7, 10, 18, 0.92);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0.65rem 1.5rem;
+      margin: -2rem -1.5rem 2rem -1.5rem;
+    }
+
+    .story-nav-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .story-nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .story-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      padding: 0.2rem 0.55rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .brand-title {
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+    }
+
+    .story-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .story-nav-link {
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .story-nav-link:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .story-nav-link.active {
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Unified Story Global Nav -->
+  <nav class="story-global-nav">
+    <div class="story-nav-inner">
+      <div class="story-nav-brand">
+        <span class="story-pill">Master Workbench</span>
+        <a href="index.html" class="brand-title">JSON Transform Suite</a>
+      </div>
+      <div class="story-nav-links">
+        <a href="index.html" class="story-nav-link active">🚀 Workbench</a>
+        <a href="1-select.html" class="story-nav-link">⚡ 1. Select</a>
+        <a href="2-rename.html" class="story-nav-link">🏷️ 2. Rename</a>
+        <a href="3-map.html" class="story-nav-link">🗺️ 3. Map</a>
+        <a href="4-table.html" class="story-nav-link">📊 4. Table UI</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="status-badge">
+        <span class="pulse-dot"></span>
+        100% Client-Side Pure CDN Powered
+      </div>
+      <h1>JSON Transform Workbench</h1>
+      <p class="subtitle">
+        Declarative data pipeline: from raw XML and enterprise JSON, through field selection and key normalization, to schema contract templating and live interactive web table rendering.
+      </p>
+
+      <div class="repo-links">
+        <a href="https://keshavsoft.github.io/select-json-by-json/" target="_blank" class="repo-link" title="Interactive Docs & Playground">
+          <span>⚡</span> select-json-by-json Docs
+        </a>
+        <a href="https://keshavsoft.github.io/rename-json-keys/" target="_blank" class="repo-link" title="Interactive Docs & Playground">
+          <span>🏷️</span> rename-json-keys Docs
+        </a>
+        <a href="https://keshavsoft.github.io/map-json-by-json/" target="_blank" class="repo-link" title="Interactive Docs & Playground">
+          <span>🗺️</span> map-json-by-json Docs
+        </a>
+        <a href="https://github.com/keshavsoft/json-to-tag-table" target="_blank" class="repo-link" title="GitHub Repository">
+          <span>📊</span> json-to-tag-table
+        </a>
+        <a href="https://github.com/keshavsoft/json-transform-recipes" target="_blank" class="repo-link" title="Showcase Repository">
+          <span>📂</span> Recipes Repo
+        </a>
+      </div>
+    </header>
+
+    <!-- Preset & Run All Toolbar -->
+    <div class="toolbar">
+      <div class="preset-group">
+        <span class="preset-label">Data Preset:</span>
+        <button class="preset-btn active" id="btnPresetInvoice">Invoices & Inventory</button>
+        <button class="preset-btn" id="btnPresetOrders">E-Commerce Orders</button>
+        <button class="preset-btn" id="btnPresetLogistics">Supply Chain Shipments</button>
+      </div>
+      <button class="btn-run-all" id="btnRunAll">
+        <span>🚀</span> Run Full Pipeline & Render Table
+      </button>
+    </div>
+
+    <!-- Stepper Navigation Ribbon -->
+    <div class="pipeline-ribbon">
+      <div class="pipe-step active" data-step="step1">
+        <div class="pipe-step-tag">Step 1: Input</div>
+        <div class="pipe-step-title">Raw Enterprise Data</div>
+        <div class="pipe-step-desc">XML or nested JSON source</div>
+      </div>
+      <div class="pipe-step" data-step="step2">
+        <div class="pipe-step-tag">Step 2: Projection</div>
+        <div class="pipe-step-title">select-json-by-json</div>
+        <div class="pipe-step-desc">Pick only needed fields</div>
+      </div>
+      <div class="pipe-step" data-step="step3">
+        <div class="pipe-step-tag">Step 3: Normalization</div>
+        <div class="pipe-step-title">rename-json-keys</div>
+        <div class="pipe-step-desc">Data is source of truth</div>
+      </div>
+      <div class="pipe-step" data-step="step4">
+        <div class="pipe-step-tag">Step 4: Contract</div>
+        <div class="pipe-step-title">map-json-by-json</div>
+        <div class="pipe-step-desc">Target template is truth</div>
+      </div>
+      <div class="pipe-step" data-step="step5">
+        <div class="pipe-step-tag">Step 5: Visual UI</div>
+        <div class="pipe-step-title">json-to-tag-table</div>
+        <div class="pipe-step-desc">Interactive Drilldown Table</div>
+      </div>
+    </div>
+
+    <!-- STEP 1: Raw Input -->
+    <div class="step-card-pane" id="pane-step1">
+      <div class="card">
+        <div class="editor-label">
+          <span>1. Raw Enterprise Source JSON</span>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn-action" id="btnFormatInput">✨ Format JSON</button>
+            <button class="btn-action" id="btnCopyInput">📋 Copy</button>
+          </div>
+        </div>
+        <textarea id="txtRawInput" spellcheck="false"></textarea>
+      </div>
+    </div>
+
+    <!-- STEP 2: select-json-by-json -->
+    <div class="step-card-pane" id="pane-step2" style="display: none;">
+      <div class="card">
+        <div class="grid-2">
+          <div>
+            <div class="editor-label">
+              <span>Projection Spec (select-json-by-json)</span>
+              <span class="tag-badge" style="background: rgba(56, 189, 248, 0.15); color: var(--accent);">Projection</span>
+            </div>
+            <textarea id="txtSelectSpec" spellcheck="false"></textarea>
+            <div style="margin-top: 0.75rem; text-align: right;">
+              <button class="btn-action" id="btnRunSelect" style="background: var(--accent); color: #04101e;">⚡ Run selectJson</button>
+            </div>
+          </div>
+          <div>
+            <div class="editor-label">
+              <span>Projected Output</span>
+              <button class="btn-action" id="btnCopySelect">📋 Copy</button>
+            </div>
+            <pre id="preSelectOut"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: rename-json-keys -->
+    <div class="step-card-pane" id="pane-step3" style="display: none;">
+      <div class="card">
+        <div class="grid-2">
+          <div>
+            <div class="editor-label">
+              <span>Key Mapping Dictionary (rename-json-keys)</span>
+              <span class="tag-badge" style="background: rgba(52, 211, 153, 0.15); color: var(--accent-green);">Normalization</span>
+            </div>
+            <textarea id="txtRenameSpec" spellcheck="false"></textarea>
+            <div style="margin-top: 0.75rem; text-align: right;">
+              <button class="btn-action" id="btnRunRename" style="background: var(--accent-green); color: #04101e;">⚡ Run renameJsonKeys</button>
+            </div>
+          </div>
+          <div>
+            <div class="editor-label">
+              <span>Renamed Output</span>
+              <button class="btn-action" id="btnCopyRename">📋 Copy</button>
+            </div>
+            <pre id="preRenameOut" style="color: var(--accent-green);"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: map-json-by-json -->
+    <div class="step-card-pane" id="pane-step4" style="display: none;">
+      <div class="card">
+        <div class="grid-2">
+          <div>
+            <div class="editor-label">
+              <span>Target Template Contract (map-json-by-json)</span>
+              <span class="tag-badge" style="background: rgba(129, 140, 248, 0.15); color: var(--accent-purple);">Template</span>
+            </div>
+            <textarea id="txtMapTemplate" spellcheck="false"></textarea>
+            <div style="margin-top: 0.75rem; text-align: right;">
+              <button class="btn-action" id="btnRunMap" style="background: var(--accent-purple); color: #04101e;">⚡ Run mapJson</button>
+            </div>
+          </div>
+          <div>
+            <div class="editor-label">
+              <span>Reshaped Contract Output</span>
+              <button class="btn-action" id="btnCopyMap">📋 Copy</button>
+            </div>
+            <pre id="preMapOut" style="color: #a5b4fc;"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5: Interactive Table Rendering -->
+    <div class="step-card-pane" id="pane-step5" style="display: none;">
+      <div class="card">
+        <div class="editor-label">
+          <span>Live Interactive Drilldown Table (json-to-tag-table)</span>
+          <button class="btn-action" id="btnRenderTable">🔄 Re-Render Table</button>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">
+          Click the expand buttons in the table rows below to inspect multi-level child structures (e.g. inventory line items and lot allocations).
+        </p>
+        <div id="tableContainer"></div>
+      </div>
+    </div>
+
+    <!-- Pipeline Stats Footer -->
+    <div class="stats-footer">
+      <span>Pipeline Status: <strong id="statStatus" style="color: var(--accent-green);">Ready</strong></span>
+      <span>Total Execution Latency: <strong id="statTotalLatency">0.00 ms</strong></span>
+    </div>
+  </div>
+
+  <!-- CDN Loader & Logic -->
+  <script type="module">
+    // Direct CDN module imports
+    import { renameJsonKeys } from "https://cdn.jsdelivr.net/gh/keshavsoft/rename-json-keys@main/src/v1/rename.js";
+    import { mapJson } from "https://cdn.jsdelivr.net/gh/keshavsoft/map-json-by-json@main/src/v1/map.js";
+
+    // selectJson from CDN bundle (via globalThis.ks.selectJson)
+    const selectJson = (source, spec) => (typeof globalThis.ks?.selectJson === "function" ? globalThis.ks.selectJson(source, spec) : source);
+
+    // Presets
+    const presets = {
+      invoice: {
+        raw: [
+          {
+            "INVOICE_NUMBER": 1001,
+            "TRANSACTION_DATE": "2026-09-24",
+            "CUSTOMER_NAME": "Alpha Global Industries",
+            "ALL_INVENTORY_ENTRIES_LIST": [
+              {
+                "STOCK_ITEM_NAME": "Industrial Power Cable",
+                "BILLED_QTY": "50 mtr",
+                "UNIT_RATE": 120.00,
+                "TOTAL_AMOUNT": 6000.00,
+                "BATCH_ALLOCATIONS_LIST": [
+                  { "BATCH_ID": "LOT-901", "ALLOCATED_QTY": "50 mtr", "AMOUNT": 6000.00 }
+                ]
+              },
+              {
+                "STOCK_ITEM_NAME": "Reinforced Mesh Roll",
+                "BILLED_QTY": "20 Nos",
+                "UNIT_RATE": 45.50,
+                "TOTAL_AMOUNT": 910.00,
+                "BATCH_ALLOCATIONS_LIST": [
+                  { "BATCH_ID": "LOT-330", "ALLOCATED_QTY": "20 Nos", "AMOUNT": 910.00 }
+                ]
+              }
+            ]
+          }
+        ],
+        selectSpec: {
+          INVOICE_NUMBER: true,
+          TRANSACTION_DATE: true,
+          CUSTOMER_NAME: true,
+          ALL_INVENTORY_ENTRIES_LIST: {
+            STOCK_ITEM_NAME: true,
+            BILLED_QTY: true,
+            TOTAL_AMOUNT: true,
+            BATCH_ALLOCATIONS_LIST: {
+              BATCH_ID: true,
+              ALLOCATED_QTY: true
+            }
+          }
+        },
+        renameMap: {
+          INVOICE_NUMBER: "invoiceNo",
+          TRANSACTION_DATE: "date",
+          CUSTOMER_NAME: "customer",
+          ALL_INVENTORY_ENTRIES_LIST: "items",
+          STOCK_ITEM_NAME: "itemName",
+          BILLED_QTY: "qty",
+          TOTAL_AMOUNT: "amount",
+          BATCH_ALLOCATIONS_LIST: "batches",
+          BATCH_ID: "batchId",
+          ALLOCATED_QTY: "allocatedQty"
+        },
+        mapTemplate: {
+          invoice: "INVOICE_NUMBER",
+          date: "TRANSACTION_DATE",
+          client: "CUSTOMER_NAME",
+          lineItems: {
+            $from: "ALL_INVENTORY_ENTRIES_LIST",
+            product: "STOCK_ITEM_NAME",
+            quantity: "BILLED_QTY",
+            subtotal: "TOTAL_AMOUNT",
+            lots: {
+              $from: "BATCH_ALLOCATIONS_LIST",
+              lotId: "BATCH_ID",
+              allocated: "ALLOCATED_QTY"
+            }
+          }
+        }
+      },
+      orders: {
+        raw: [
+          {
+            "ORDER_IDENTIFIER": "ORD-5542",
+            "PURCHASE_TIMESTAMP": "2026-09-24T10:15:00Z",
+            "ACCOUNT_BUYER": "Sophia Martinez",
+            "ORDER_LINES_COLLECTION": [
+              {
+                "PRODUCT_SKU": "SKU-HEADPHONES-01",
+                "ORDERED_UNITS": 1,
+                "LINE_PRICE": 249.99
+              },
+              {
+                "PRODUCT_SKU": "SKU-CASE-PRO",
+                "ORDERED_UNITS": 2,
+                "LINE_PRICE": 29.99
+              }
+            ]
+          }
+        ],
+        selectSpec: {
+          ORDER_IDENTIFIER: true,
+          PURCHASE_TIMESTAMP: true,
+          ACCOUNT_BUYER: true,
+          ORDER_LINES_COLLECTION: {
+            PRODUCT_SKU: true,
+            ORDERED_UNITS: true,
+            LINE_PRICE: true
+          }
+        },
+        renameMap: {
+          ORDER_IDENTIFIER: "orderId",
+          PURCHASE_TIMESTAMP: "timestamp",
+          ACCOUNT_BUYER: "buyer",
+          ORDER_LINES_COLLECTION: "lines",
+          PRODUCT_SKU: "sku",
+          ORDERED_UNITS: "units",
+          LINE_PRICE: "price"
+        },
+        mapTemplate: {
+          orderId: "ORDER_IDENTIFIER",
+          customer: "ACCOUNT_BUYER",
+          items: {
+            $from: "ORDER_LINES_COLLECTION",
+            sku: "PRODUCT_SKU",
+            units: "ORDERED_UNITS",
+            total: "LINE_PRICE"
+          }
+        }
+      },
+      logistics: {
+        raw: [
+          {
+            "WAYBILL_NUMBER": "WB-88741",
+            "DISPATCH_DATE": "2026-09-24",
+            "DESTINATION_HUB": "Berlin Regional Port",
+            "CARGO_MANIFEST_ITEMS": [
+              {
+                "CONTAINER_CODE": "CN-4012",
+                "WEIGHT_KG": 4200,
+                "SEAL_IDENTIFIERS": [
+                  { "SEAL_TAG": "S-102" },
+                  { "SEAL_TAG": "S-103" }
+                ]
+              }
+            ]
+          }
+        ],
+        selectSpec: {
+          WAYBILL_NUMBER: true,
+          DISPATCH_DATE: true,
+          DESTINATION_HUB: true,
+          CARGO_MANIFEST_ITEMS: {
+            CONTAINER_CODE: true,
+            WEIGHT_KG: true,
+            SEAL_IDENTIFIERS: {
+              SEAL_TAG: true
+            }
+          }
+        },
+        renameMap: {
+          WAYBILL_NUMBER: "trackingId",
+          DISPATCH_DATE: "date",
+          DESTINATION_HUB: "destination",
+          CARGO_MANIFEST_ITEMS: "containers",
+          CONTAINER_CODE: "container",
+          WEIGHT_KG: "weight",
+          SEAL_IDENTIFIERS: "seals",
+          SEAL_TAG: "seal"
+        },
+        mapTemplate: {
+          tracking: "WAYBILL_NUMBER",
+          destination: "DESTINATION_HUB",
+          shipment: {
+            $from: "CARGO_MANIFEST_ITEMS",
+            containerId: "CONTAINER_CODE",
+            grossWeight: "WEIGHT_KG"
+          }
+        }
+      }
+    };
+
+    // DOM Elements
+    const txtRawInput = document.getElementById("txtRawInput");
+    const txtSelectSpec = document.getElementById("txtSelectSpec");
+    const preSelectOut = document.getElementById("preSelectOut");
+    const txtRenameSpec = document.getElementById("txtRenameSpec");
+    const preRenameOut = document.getElementById("preRenameOut");
+    const txtMapTemplate = document.getElementById("txtMapTemplate");
+    const preMapOut = document.getElementById("preMapOut");
+    const tableContainer = document.getElementById("tableContainer");
+    const statTotalLatency = document.getElementById("statTotalLatency");
+    const statStatus = document.getElementById("statStatus");
+
+    // Stepper Tab Switching
+    document.querySelectorAll(".pipe-step").forEach(step => {
+      step.addEventListener("click", () => {
+        document.querySelectorAll(".pipe-step").forEach(s => s.classList.remove("active"));
+        document.querySelectorAll(".step-card-pane").forEach(p => p.style.display = "none");
+        step.classList.add("active");
+        const targetPane = document.getElementById(`pane-${step.dataset.step}`);
+        if (targetPane) targetPane.style.display = "block";
+      });
+    });
+
+    // Load Preset Function
+    function loadPreset(presetKey) {
+      const p = presets[presetKey];
+      if (!p) return;
+      txtRawInput.value = JSON.stringify(p.raw, null, 2);
+      txtSelectSpec.value = JSON.stringify(p.selectSpec, null, 2);
+      txtRenameSpec.value = JSON.stringify(p.renameMap, null, 2);
+      txtMapTemplate.value = JSON.stringify(p.mapTemplate, null, 2);
+      runPipeline();
+    }
+
+    // Preset button event listeners
+    document.getElementById("btnPresetInvoice").addEventListener("click", (e) => {
+      setActivePreset(e.target);
+      loadPreset("invoice");
+    });
+    document.getElementById("btnPresetOrders").addEventListener("click", (e) => {
+      setActivePreset(e.target);
+      loadPreset("orders");
+    });
+    document.getElementById("btnPresetLogistics").addEventListener("click", (e) => {
+      setActivePreset(e.target);
+      loadPreset("logistics");
+    });
+
+    function setActivePreset(target) {
+      document.querySelectorAll(".preset-btn").forEach(b => b.classList.remove("active"));
+      target.classList.add("active");
+    }
+
+    // Step 2 Run: Select
+    function runStepSelect() {
+      try {
+        const raw = JSON.parse(txtRawInput.value);
+        const spec = JSON.parse(txtSelectSpec.value);
+        const res = selectJson(raw, spec);
+        preSelectOut.textContent = JSON.stringify(res, null, 2);
+        return res;
+      } catch (err) {
+        preSelectOut.textContent = `❌ ${err.message}`;
+        return null;
+      }
+    }
+    document.getElementById("btnRunSelect").addEventListener("click", runStepSelect);
+
+    // Step 3 Run: Rename
+    function runStepRename(inputData) {
+      try {
+        const data = inputData || runStepSelect() || JSON.parse(txtRawInput.value);
+        const keys = JSON.parse(txtRenameSpec.value);
+        const res = renameJsonKeys(data, keys);
+        preRenameOut.textContent = JSON.stringify(res, null, 2);
+        return res;
+      } catch (err) {
+        preRenameOut.textContent = `❌ ${err.message}`;
+        return null;
+      }
+    }
+    document.getElementById("btnRunRename").addEventListener("click", () => runStepRename());
+
+    // Step 4 Run: Map
+    function runStepMap() {
+      try {
+        const raw = JSON.parse(txtRawInput.value);
+        const template = JSON.parse(txtMapTemplate.value);
+        const res = mapJson(template, raw);
+        preMapOut.textContent = JSON.stringify(res, null, 2);
+        return res;
+      } catch (err) {
+        preMapOut.textContent = `❌ ${err.message}`;
+        return null;
+      }
+    }
+    document.getElementById("btnRunMap").addEventListener("click", runStepMap);
+
+    // Step 5: Render Table via json-to-tag-table CDN
+    function renderTableUI(data) {
+      tableContainer.innerHTML = "";
+      if (!data) return;
+
+      try {
+        if (typeof globalThis.ks?.jsonToTagTable === "function") {
+          globalThis.ks.jsonToTagTable({
+            inData: data,
+            inTargetElement: tableContainer
+          });
+        } else if (typeof globalThis.ks?.jsonToTagTable?.Table === "function") {
+          const table = new globalThis.ks.jsonToTagTable.Table({
+            theme: "default",
+            data: Array.isArray(data) ? data : [data]
+          });
+          table.methods.render({
+            targetHtmlId: "tableContainer",
+            inSkeletonType: "tableSimple"
+          });
+        } else {
+          // Clean fallback table renderer if DOM container renderer is custom
+          renderFallbackTable(data, tableContainer);
+        }
+      } catch (err) {
+        renderFallbackTable(data, tableContainer);
+      }
+    }
+
+    function renderFallbackTable(data, container) {
+      const arr = Array.isArray(data) ? data : [data];
+      if (arr.length === 0) {
+        container.innerHTML = "<p style='color: var(--text-muted);'>No records to display.</p>";
+        return;
+      }
+
+      const keys = Object.keys(arr[0]);
+      let html = "<table><thead><tr>";
+      keys.forEach(k => html += `<th>${k}</th>`);
+      html += "</tr></thead><tbody>";
+
+      arr.forEach(row => {
+        html += "<tr>";
+        keys.forEach(k => {
+          const val = row[k];
+          if (Array.isArray(val)) {
+            html += `<td><button onclick='alert(JSON.stringify(${JSON.stringify(val)}, null, 2))'>Expand (${val.length} items)</button></td>`;
+          } else if (typeof val === "object" && val !== null) {
+            html += `<td><button onclick='alert(JSON.stringify(${JSON.stringify(val)}, null, 2))'>View Details</button></td>`;
+          } else {
+            html += `<td>${val ?? ""}</td>`;
+          }
+        });
+        html += "</tr>";
+      });
+
+      html += "</tbody></table>";
+      container.innerHTML = html;
+    }
+
+    document.getElementById("btnRenderTable").addEventListener("click", () => {
+      const current = runStepRename();
+      renderTableUI(current);
+    });
+
+    // Run Full Pipeline
+    function runPipeline() {
+      const t0 = performance.now();
+      statStatus.textContent = "Processing...";
+
+      const selected = runStepSelect();
+      const renamed = runStepRename(selected);
+      runStepMap();
+      renderTableUI(renamed);
+
+      const t1 = performance.now();
+      statTotalLatency.textContent = `${(t1 - t0).toFixed(2)} ms`;
+      statStatus.textContent = "Pipeline Execution Complete";
+    }
+
+    document.getElementById("btnRunAll").addEventListener("click", runPipeline);
+
+    // Copy & Format helpers
+    document.getElementById("btnFormatInput").addEventListener("click", () => {
+      try {
+        txtRawInput.value = JSON.stringify(JSON.parse(txtRawInput.value), null, 2);
+      } catch (err) { alert("Invalid JSON: " + err.message); }
+    });
+
+    document.getElementById("btnCopyInput").addEventListener("click", () => copyToClipboard(txtRawInput.value));
+    document.getElementById("btnCopySelect").addEventListener("click", () => copyToClipboard(preSelectOut.textContent));
+    document.getElementById("btnCopyRename").addEventListener("click", () => copyToClipboard(preRenameOut.textContent));
+    document.getElementById("btnCopyMap").addEventListener("click", () => copyToClipboard(preMapOut.textContent));
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => alert("Copied to clipboard!"));
+    }
+
+    // Initial load
+    loadPreset("invoice");
+  </script>
+</body>
+</html>
