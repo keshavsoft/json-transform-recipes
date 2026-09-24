@@ -159,15 +159,71 @@
       line-height: 1.6;
     }
 
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin-bottom: 2rem;
+    /* Preset Toolbar */
+    .preset-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 0.75rem 1.25rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
     }
 
-    @media (max-width: 900px) {
-      .grid-2 {
+    .preset-btns {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .preset-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-right: 0.25rem;
+    }
+
+    .btn-preset {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+      padding: 0.45rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-preset:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+
+    .btn-preset.active {
+      background: var(--accent);
+      color: #04101e;
+      border-color: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    /* 2-Column Responsive Playground */
+    .playground-grid {
+      display: grid;
+      grid-template-columns: 460px 1fr;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      .playground-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -175,26 +231,45 @@
     .card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 1.5rem;
+      border-radius: 14px;
+      padding: 1.25rem;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      margin-bottom: 2rem;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     }
 
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
       flex-wrap: wrap;
       gap: 0.5rem;
     }
 
     .card-title {
-      font-size: 1.05rem;
+      font-size: 0.92rem;
       font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-action {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      border: 1px solid var(--card-border);
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-action:hover {
+      background: rgba(255, 255, 255, 0.16);
       color: #fff;
     }
 
@@ -202,11 +277,11 @@
       background: var(--accent);
       color: #04101e;
       border: none;
-      padding: 0.5rem 1rem;
+      padding: 0.45rem 0.9rem;
       border-radius: 8px;
       font-family: inherit;
       font-weight: 600;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       cursor: pointer;
       transition: all 0.2s;
     }
@@ -229,22 +304,30 @@
 
     textarea {
       width: 100%;
-      height: 280px;
+      height: 420px;
       background: var(--code-bg);
       border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 1rem;
+      border-radius: 8px;
+      padding: 0.85rem;
       font-family: 'Fira Code', monospace;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: #e2e8f0;
       resize: vertical;
       outline: none;
-      line-height: 1.5;
+      line-height: 1.45;
     }
 
     textarea:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .stats-footer {
+      margin-top: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--text-muted);
     }
 
     /* Table Styles */
@@ -388,6 +471,7 @@
         <a href="2-rename.html" class="story-nav-link">🏷️ 2. Rename</a>
         <a href="3-map.html" class="story-nav-link">🗺️ 3. Map</a>
         <a href="4-table.html" class="story-nav-link active">📊 4. Table UI</a>
+        <a href="repos.html" class="story-nav-link">🌐 Repos &amp; Architecture</a>
       </div>
     </div>
   </nav>
@@ -395,7 +479,7 @@
   <div class="container">
     <header>
       <div class="badge">
-        <span>📊</span> Step 4: Visual Table & Drilldown Explorer
+        <span>📊</span> Step 4: Visual Table &amp; Drilldown Explorer
       </div>
       <h1>json-to-tag-table</h1>
       <p class="subtitle">
@@ -403,26 +487,49 @@
       </p>
     </header>
 
-    <!-- Interactive Editor -->
-    <div class="card">
-      <div class="card-header">
-        <span class="card-title">Structured JSON Data Input</span>
-        <div style="display: flex; gap: 0.5rem;">
-          <button class="btn-secondary" id="btnPreset1">Invoices Dataset</button>
-          <button class="btn-secondary" id="btnPreset2">Logistics Dataset</button>
-          <button id="btnRender">⚡ Render Table</button>
-        </div>
+    <!-- Preset Selector Bar -->
+    <div class="preset-toolbar">
+      <div class="preset-btns">
+        <span class="preset-label">Select JSON:</span>
+        <button class="btn-preset active" id="btnPresetInvoices">Invoices &amp; Inventory</button>
+        <button class="btn-preset" id="btnPresetOrders">E-Commerce Orders</button>
+        <button class="btn-preset" id="btnPresetLogistics">Logistics Waybills</button>
       </div>
-      <textarea id="tableDataInput" spellcheck="false"></textarea>
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <span id="statRenderTime" style="color: var(--accent); font-size: 0.82rem; font-weight: 700;">Rendered in 0.00 ms</span>
+      </div>
     </div>
 
-    <!-- Table Output Display -->
-    <div class="card">
-      <div class="card-header">
-        <span class="card-title" style="color: var(--accent);">Live Rendered Table View</span>
-        <span id="statRenderTime" style="color: var(--text-muted); font-size: 0.85rem;"></span>
+    <!-- 2-Column Responsive Playground -->
+    <div class="playground-grid">
+      <!-- 1. Input JSON Data -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><span>📥</span> 1. Source JSON Records</span>
+          <div style="display: flex; gap: 0.4rem;">
+            <button class="btn-action" id="btnCopyInput">📋 Copy</button>
+            <button class="btn-action" id="btnFormatInput">✨ Format</button>
+          </div>
+        </div>
+        <textarea id="tableDataInput" spellcheck="false"></textarea>
+        <div class="stats-footer">
+          <span>Records: <strong id="statRecordCount">0</strong></span>
+          <span style="color: var(--accent);">Real-time Reactive Table</span>
+        </div>
       </div>
-      <div id="tableDisplayArea"></div>
+
+      <!-- 2. Live Rendered Table Area -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title" style="color: var(--accent);"><span>📊</span> 2. Live Interactive Table</span>
+          <button class="btn-action" id="btnCopyHtml">📋 Copy HTML</button>
+        </div>
+        <div id="tableDisplayArea"></div>
+        <div class="stats-footer">
+          <span>Drilldown: Click <strong>Inspect</strong> to expand child records</span>
+          <span id="statThemeTag" style="color: var(--accent);">Theme: Dark Matrix</span>
+        </div>
+      </div>
     </div>
 
     <!-- Documentation Section -->
@@ -480,6 +587,26 @@ table.methods.render({
       }
     ];
 
+    const sampleOrders = [
+      {
+        "orderId": "ORD-5501",
+        "customer": "HyperScale Logistics",
+        "orderStatus": "DISPATCHED",
+        "items": [
+          { "sku": "SKU-OPT-100", "product": "Optical Sensor Unit", "quantity": 12, "unitPrice": 85.00 },
+          { "sku": "SKU-MOD-400", "product": "Sub-Controller Module", "quantity": 4, "unitPrice": 310.00 }
+        ]
+      },
+      {
+        "orderId": "ORD-5502",
+        "customer": "Apex Manufacturing Ltd",
+        "orderStatus": "PROCESSING",
+        "items": [
+          { "sku": "SKU-VAL-200", "product": "Flow Regulating Valve", "quantity": 25, "unitPrice": 42.50 }
+        ]
+      }
+    ];
+
     const sampleLogistics = [
       {
         "waybill": "WB-88190",
@@ -490,18 +617,38 @@ table.methods.render({
           { "containerId": "C-901", "weightKg": 4200, "seal": "SL-9941" },
           { "containerId": "C-902", "weightKg": 3150, "seal": "SL-9942" }
         ]
+      },
+      {
+        "waybill": "WB-88191",
+        "origin": "North Coast Harbor Terminal",
+        "destination": "Regional Logistics Center",
+        "driver": "Elena Rostova",
+        "containers": [
+          { "containerId": "C-903", "weightKg": 5600, "seal": "SL-9943" }
+        ]
       }
     ];
 
     const tableDataInput = document.getElementById("tableDataInput");
     const tableDisplayArea = document.getElementById("tableDisplayArea");
     const statRenderTime = document.getElementById("statRenderTime");
+    const statRecordCount = document.getElementById("statRecordCount");
     const modalOverlay = document.getElementById("modalOverlay");
     const modalTitle = document.getElementById("modalTitle");
     const modalBody = document.getElementById("modalBody");
     const btnCloseModal = document.getElementById("btnCloseModal");
 
+    const btnPresetInvoices = document.getElementById("btnPresetInvoices");
+    const btnPresetOrders = document.getElementById("btnPresetOrders");
+    const btnPresetLogistics = document.getElementById("btnPresetLogistics");
+    const presetButtons = [btnPresetInvoices, btnPresetOrders, btnPresetLogistics];
+
     tableDataInput.value = JSON.stringify(sampleInvoices, null, 2);
+
+    function setActivePreset(activeBtn) {
+      presetButtons.forEach(btn => btn?.classList.remove("active"));
+      activeBtn?.classList.add("active");
+    }
 
     function renderTable() {
       tableDisplayArea.innerHTML = "";
@@ -510,6 +657,7 @@ table.methods.render({
       try {
         const raw = JSON.parse(tableDataInput.value);
         const data = Array.isArray(raw) ? raw : [raw];
+        statRecordCount.textContent = data.length;
 
         if (data.length === 0) {
           tableDisplayArea.innerHTML = "<p style='color: var(--text-muted);'>No data to display.</p>";
@@ -542,6 +690,7 @@ table.methods.render({
     }
 
     function renderInteractiveTable(data, container) {
+      if (!data || data.length === 0) return;
       const keys = Object.keys(data[0]);
       let html = "<table><thead><tr>";
       keys.forEach(k => html += `<th>${k}</th>`);
@@ -611,17 +760,54 @@ table.methods.render({
       if (e.target === modalOverlay) modalOverlay.style.display = "none";
     });
 
-    document.getElementById("btnPreset1").addEventListener("click", () => {
+    btnPresetInvoices.addEventListener("click", () => {
+      setActivePreset(btnPresetInvoices);
       tableDataInput.value = JSON.stringify(sampleInvoices, null, 2);
       renderTable();
     });
 
-    document.getElementById("btnPreset2").addEventListener("click", () => {
+    btnPresetOrders.addEventListener("click", () => {
+      setActivePreset(btnPresetOrders);
+      tableDataInput.value = JSON.stringify(sampleOrders, null, 2);
+      renderTable();
+    });
+
+    btnPresetLogistics.addEventListener("click", () => {
+      setActivePreset(btnPresetLogistics);
       tableDataInput.value = JSON.stringify(sampleLogistics, null, 2);
       renderTable();
     });
 
-    document.getElementById("btnRender").addEventListener("click", renderTable);
+    // Reactive input listener with debounce
+    let debounceTimer;
+    tableDataInput.addEventListener("input", () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(renderTable, 200);
+    });
+
+    // Copy buttons
+    document.getElementById("btnCopyInput").addEventListener("click", () => {
+      navigator.clipboard.writeText(tableDataInput.value);
+      const original = document.getElementById("btnCopyInput").textContent;
+      document.getElementById("btnCopyInput").textContent = "✓ Copied!";
+      setTimeout(() => document.getElementById("btnCopyInput").textContent = original, 1500);
+    });
+
+    document.getElementById("btnFormatInput").addEventListener("click", () => {
+      try {
+        const parsed = JSON.parse(tableDataInput.value);
+        tableDataInput.value = JSON.stringify(parsed, null, 2);
+      } catch (e) {
+        alert("Invalid JSON: " + e.message);
+      }
+    });
+
+    document.getElementById("btnCopyHtml").addEventListener("click", () => {
+      navigator.clipboard.writeText(tableDisplayArea.innerHTML);
+      const original = document.getElementById("btnCopyHtml").textContent;
+      document.getElementById("btnCopyHtml").textContent = "✓ Copied!";
+      setTimeout(() => document.getElementById("btnCopyHtml").textContent = original, 1500);
+    });
 
     // Initial render
     renderTable();

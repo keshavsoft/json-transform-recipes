@@ -1,307 +1,576 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>select-json-by-json — Deep-Dive Field Projection Playground</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    },
-                    colors: {
-                        brand: {
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            700: '#4338ca'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        pre, code, textarea {
-            font-family: 'JetBrains Mono', monospace;
-        }
-        .story-nav-link {
-            padding: 0.35rem 0.75rem;
-            border-radius: 0.5rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #94a3b8;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-        }
-        .story-nav-link:hover {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.08);
-        }
-        .story-nav-link.active {
-            color: #38bdf8;
-            background: rgba(56, 189, 248, 0.15);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>select-json-by-json — Interactive Projection Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #070a13;
+      --card-bg: rgba(16, 24, 40, 0.8);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.25);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --success: #38bdf8;
+      --code-bg: #030712;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.15), transparent),
+        radial-gradient(ellipse 60% 40% at 100% 50%, rgba(56, 189, 248, 0.08), transparent);
+    }
+
+    /* Unified Story Nav */
+    .story-global-nav {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(7, 10, 19, 0.94);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 0.65rem 1.5rem;
+    }
+
+    .story-nav-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .story-nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .story-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: rgba(99, 102, 241, 0.15);
+      color: #818cf8;
+      padding: 0.2rem 0.55rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .brand-title {
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+    }
+
+    .story-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .story-nav-link {
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .story-nav-link:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .story-nav-link.active {
+      color: #818cf8;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 9999px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #818cf8;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.35rem;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      max-width: 720px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    /* Preset Toolbar */
+    .preset-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 0.75rem 1.25rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .preset-btns {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .preset-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-right: 0.25rem;
+    }
+
+    .btn-preset {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+      padding: 0.45rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-preset:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+
+    .btn-preset.active {
+      background: #6366f1;
+      color: #ffffff;
+      border-color: #6366f1;
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    /* 3-Column Responsive Playground */
+    .playground-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 1024px) {
+      .playground-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .card-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-action {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      border: 1px solid var(--card-border);
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-action:hover {
+      background: rgba(255, 255, 255, 0.16);
+      color: #fff;
+    }
+
+    textarea, pre {
+      width: 100%;
+      height: 380px;
+      background: var(--code-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0.85rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: #e2e8f0;
+      resize: vertical;
+      outline: none;
+      line-height: 1.45;
+      overflow-y: auto;
+    }
+
+    textarea:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    pre {
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .stats-footer {
+      margin-top: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+  </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen antialiased flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
+<body>
 
-    <!-- Unified Story Global Nav -->
-    <nav class="border-b border-slate-800/80 bg-slate-950/90 backdrop-blur sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between gap-4 flex-wrap">
-            <div class="flex items-center gap-3">
-                <span class="px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider bg-indigo-500/20 text-indigo-300 rounded border border-indigo-500/30">Recipe 1</span>
-                <a href="index.html" class="text-sm font-bold text-white hover:text-indigo-300 transition">JSON Transform Suite</a>
-            </div>
-            <div class="flex items-center gap-1.5 flex-wrap">
-                <a href="index.html" class="story-nav-link">🚀 Workbench</a>
-                <a href="1-select.html" class="story-nav-link active">⚡ 1. Select</a>
-                <a href="2-rename.html" class="story-nav-link">🏷️ 2. Rename</a>
-                <a href="3-map.html" class="story-nav-link">🗺️ 3. Map</a>
-                <a href="4-table.html" class="story-nav-link">📊 4. Table UI</a>
-            </div>
-        </div>
-    </nav>
+  <!-- Unified Story Global Nav -->
+  <nav class="story-global-nav">
+    <div class="story-nav-inner">
+      <div class="story-nav-brand">
+        <span class="story-pill">Recipe 1</span>
+        <a href="index.html" class="brand-title">JSON Transform Suite</a>
+      </div>
+      <div class="story-nav-links">
+        <a href="index.html" class="story-nav-link">🚀 Workbench</a>
+        <a href="1-select.html" class="story-nav-link active">⚡ 1. Select</a>
+        <a href="2-rename.html" class="story-nav-link">🏷️ 2. Rename</a>
+        <a href="3-map.html" class="story-nav-link">🗺️ 3. Map</a>
+        <a href="4-table.html" class="story-nav-link">📊 4. Table UI</a>
+        <a href="repos.html" class="story-nav-link">🌐 Repos &amp; Architecture</a>
+      </div>
+    </div>
+  </nav>
 
-    <!-- Header -->
-    <header class="border-b border-slate-900 bg-slate-900/50 backdrop-blur">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4 flex-wrap">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-emerald-500 flex items-center justify-center font-bold text-white shadow-lg text-lg">
-                    ⚡
-                </div>
-                <div>
-                    <h1 class="text-lg font-bold text-white tracking-tight flex items-center gap-2">
-                        select-json-by-json <span class="px-2 py-0.5 text-xs bg-indigo-500/20 text-indigo-300 rounded border border-indigo-500/30 font-mono">v1.0.0</span>
-                    </h1>
-                    <p class="text-xs text-slate-400">Step 1: Declarative JSON projection engine for Node.js and Browser</p>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-3">
-                <a href="https://github.com/keshavsoft/select-json-by-json" target="_blank" rel="noopener" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-white transition flex items-center gap-1.5 border border-slate-700">
-                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                    <span>GitHub</span>
-                </a>
-                <a href="https://cdn.jsdelivr.net/gh/keshavsoft/select-json-by-json@main/docs/dist/min.js" target="_blank" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 transition flex items-center gap-1">
-                    <span>📦</span> CDN Bundle
-                </a>
-            </div>
-        </div>
+  <div class="container">
+    <header>
+      <div class="badge">
+        <span>⚡</span> Step 1: Field Projection Playground
+      </div>
+      <h1>select-json-by-json</h1>
+      <p class="subtitle">
+        Pick a sample dataset below. The source data and projection spec load instantly, and only selected properties are retained in real-time.
+      </p>
     </header>
 
-    <!-- Main Content -->
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
+    <!-- Preset Selector Bar -->
+    <div class="preset-toolbar">
+      <div class="preset-btns">
+        <span class="preset-label">Select JSON:</span>
+        <button class="btn-preset active" id="btnPresetInvoices">Invoices &amp; Inventory</button>
+        <button class="btn-preset" id="btnPresetOrders">E-Commerce Orders</button>
+        <button class="btn-preset" id="btnPresetLogistics">Logistics Waybills</button>
+      </div>
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <span id="statLatency" style="color: var(--success); font-size: 0.82rem; font-weight: 700;">Latency: 0.00 ms</span>
+      </div>
+    </div>
 
-        <!-- Hero -->
-        <div class="text-center py-6 space-y-2">
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                Recipe 1: Interactive <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-300 to-emerald-400">JSON Projection Engine</span>
-            </h2>
-            <p class="max-w-2xl mx-auto text-slate-400 text-xs sm:text-sm">
-                Filter and pluck deep nested JSON structures and arrays using a declarative projection spec. Source data is the source of truth.
-            </p>
+    <!-- 3-Column Live Playground -->
+    <div class="playground-grid">
+      <!-- 1. Input Data -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><span>📥</span> 1. Source JSON</span>
+          <button class="btn-action" id="btnCopyInput">📋 Copy</button>
         </div>
+        <textarea id="sourceInput" spellcheck="false"></textarea>
+      </div>
 
-        <!-- Playground Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-
-            <!-- 1. Source JSON -->
-            <div class="flex flex-col bg-slate-900/80 border border-slate-800 rounded-xl overflow-hidden shadow-lg">
-                <div class="px-4 py-2.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
-                    <span class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span> Source JSON
-                    </span>
-                    <button id="btnResetSource" class="text-[11px] text-slate-400 hover:text-white transition">Reset Sample</button>
-                </div>
-                <textarea id="sourceInput" class="flex-1 p-3 bg-slate-950 text-indigo-200 text-xs font-mono leading-relaxed outline-none resize-none min-h-[380px]" spellcheck="false"></textarea>
-            </div>
-
-            <!-- 2. Spec JSON -->
-            <div class="flex flex-col bg-slate-900/80 border border-slate-800 rounded-xl overflow-hidden shadow-lg">
-                <div class="px-4 py-2.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
-                    <span class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full bg-purple-500"></span> Projection Spec JSON
-                    </span>
-                    <span class="text-[11px] text-slate-500 font-mono">true = keep field</span>
-                </div>
-                <textarea id="specInput" class="flex-1 p-3 bg-slate-950 text-purple-200 text-xs font-mono leading-relaxed outline-none resize-none min-h-[380px]" spellcheck="false"></textarea>
-            </div>
-
-            <!-- 3. Result JSON -->
-            <div class="flex flex-col bg-slate-900/80 border border-slate-800 rounded-xl overflow-hidden shadow-lg">
-                <div class="px-4 py-2.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
-                    <span class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Projected Result
-                    </span>
-                    <span id="resultMeta" class="text-[11px] text-emerald-400 font-mono"></span>
-                </div>
-                <pre id="resultOutput" class="flex-1 p-3 bg-slate-950 text-emerald-300 text-xs font-mono leading-relaxed overflow-auto min-h-[380px]"></pre>
-            </div>
-
+      <!-- 2. Projection Spec -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><span>⚡</span> 2. Projection Spec (true = keep)</span>
+          <button class="btn-action" id="btnCopySpec">📋 Copy</button>
         </div>
+        <textarea id="specInput" spellcheck="false"></textarea>
+      </div>
 
-        <!-- Action Bar -->
-        <div class="flex items-center justify-center gap-4">
-            <button id="btnRun" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-sm transition shadow-lg shadow-indigo-500/20 flex items-center gap-2">
-                <span>⚡</span> Run Projection
-            </button>
-            <a href="2-rename.html" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm transition flex items-center gap-2 border border-slate-700">
-                <span>Next: Recipe 2 (Rename Keys)</span> <span>→</span>
-            </a>
+      <!-- 3. Live Projected Result -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title" style="color: var(--success);"><span>✨</span> 3. Live Projected Output</span>
+          <button class="btn-action" id="btnCopyOutput">📋 Copy</button>
         </div>
-
-        <!-- Documentation Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-
-            <!-- NPX -->
-            <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
-                <div class="text-xs font-semibold text-indigo-400 font-mono uppercase tracking-wider">NPX (Local Install)</div>
-                <pre class="p-3 rounded-lg bg-slate-950 text-xs font-mono text-slate-300 overflow-x-auto">npx select-json-by-json</pre>
-                <p class="text-xs text-slate-400">Copies the latest version dynamically into your project.</p>
-            </div>
-
-            <!-- NPM -->
-            <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
-                <div class="text-xs font-semibold text-purple-400 font-mono uppercase tracking-wider">NPM Package</div>
-                <pre class="p-3 rounded-lg bg-slate-950 text-xs font-mono text-slate-300 overflow-x-auto">npm i select-json-by-json</pre>
-                <p class="text-xs text-slate-400">Use <code class="text-purple-300">import { selectJson } from "select-json-by-json"</code> in any project.</p>
-            </div>
-
-            <!-- CDN -->
-            <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
-                <div class="text-xs font-semibold text-emerald-400 font-mono uppercase tracking-wider">CDN (Vite Bundle)</div>
-                <pre class="p-3 rounded-lg bg-slate-950 text-xs font-mono text-slate-300 overflow-x-auto">https://cdn.jsdelivr.net/gh/keshavsoft/select-json-by-json@main/docs/dist/min.js</pre>
-                <p class="text-xs text-slate-400">Under 1KB gzipped standalone module with zero runtime dependencies.</p>
-            </div>
-
+        <pre id="resultOutput" style="color: var(--success);"></pre>
+        <div class="stats-footer">
+          <span>Mode: <strong>1:1 Projection</strong></span>
+          <span style="color: var(--success);">Instant Reactive Render</span>
         </div>
+      </div>
+    </div>
 
-    </main>
+  </div>
 
-    <!-- Footer -->
-    <footer class="border-t border-slate-900 bg-slate-950 py-4 text-center text-xs text-slate-600">
-        select-json-by-json &bull; KeshavSoft &bull; MIT License
-    </footer>
-
-    <!-- Interactive script importing from CDN -->
-    <script type="module">
-        let selectJson;
-        try {
-            const mod = await import("https://cdn.jsdelivr.net/gh/keshavsoft/select-json-by-json@main/docs/dist/min.js");
-            selectJson = mod.selectJson || globalThis.ks?.selectJson;
-        } catch (e) {
-            // Standalone fallback
-            const isObject = v => v !== null && typeof v === "object";
-            const isPlainObject = v => isObject(v) && !Array.isArray(v);
-            const selectValue = (source, spec) => {
-                if (!isObject(source) || !isPlainObject(spec)) return undefined;
-                if (Array.isArray(source)) return source.map(item => selectValue(item, spec)).filter(item => item !== undefined);
-                const result = {};
-                Object.entries(spec).forEach(([key, rule]) => {
-                    if (!(key in source)) return;
-                    if (rule === true || rule === 1) { result[key] = source[key]; return; }
-                    if (isPlainObject(rule)) {
-                        const selected = selectValue(source[key], rule);
-                        if (selected !== undefined) result[key] = selected;
-                    }
-                });
-                return result;
-            };
-            selectJson = (source, spec) => selectValue(source, spec);
-        }
-
-        const sampleSource = [
-            {
-                DATE: "2026-09-24",
-                INVOICE_NUMBER: 1001,
-                CUSTOMER_NAME: "Alpha Global Industries",
-                PAYMENT_TERMS: "Net 30",
-                TOTAL_TAX: 180.50,
-                ALL_INVENTORY_ENTRIES_LIST: [
-                    {
-                        ITEM_NAME: "Industrial Power Cable",
-                        RATE: 120.0,
-                        AMOUNT: 6000.0,
-                        INTERNAL_NOTES: "Deliver to dock 4",
-                        BATCH_ALLOCATIONS_LIST: [
-                            { BATCH_ID: "LOT-901", ALLOCATED_QTY: 50 }
-                        ]
-                    },
-                    {
-                        ITEM_NAME: "Reinforced Mesh Roll",
-                        RATE: 45.5,
-                        AMOUNT: 910.0,
-                        INTERNAL_NOTES: "Standard packaging",
-                        BATCH_ALLOCATIONS_LIST: [
-                            { BATCH_ID: "LOT-330", ALLOCATED_QTY: 20 }
-                        ]
-                    }
-                ]
-            }
-        ];
-
-        const sampleSpec = {
-            INVOICE_NUMBER: true,
-            DATE: true,
-            CUSTOMER_NAME: true,
-            ALL_INVENTORY_ENTRIES_LIST: {
-                ITEM_NAME: true,
-                AMOUNT: true,
-                BATCH_ALLOCATIONS_LIST: {
-                    BATCH_ID: true
-                }
-            }
-        };
-
-        const sourceInput = document.getElementById("sourceInput");
-        const specInput = document.getElementById("specInput");
-        const resultOutput = document.getElementById("resultOutput");
-        const resultMeta = document.getElementById("resultMeta");
-        const btnRun = document.getElementById("btnRun");
-        const btnResetSource = document.getElementById("btnResetSource");
-
-        sourceInput.value = JSON.stringify(sampleSource, null, 2);
-        specInput.value = JSON.stringify(sampleSpec, null, 2);
-
-        const executeProjection = () => {
-            try {
-                const source = JSON.parse(sourceInput.value);
-                const spec = JSON.parse(specInput.value);
-                const t0 = performance.now();
-                const result = selectJson(source, spec);
-                const t1 = performance.now();
-
-                resultOutput.textContent = JSON.stringify(result, null, 2);
-                resultMeta.textContent = `Completed in ${(t1 - t0).toFixed(2)}ms`;
-                resultOutput.classList.remove("text-rose-400");
-                resultOutput.classList.add("text-emerald-300");
-            } catch (err) {
-                resultOutput.textContent = "Error: " + err.message;
-                resultOutput.classList.remove("text-emerald-300");
-                resultOutput.classList.add("text-rose-400");
-                resultMeta.textContent = "Parse/Execution Error";
-            }
-        };
-
-        btnRun.addEventListener("click", executeProjection);
-        btnResetSource.addEventListener("click", () => {
-            sourceInput.value = JSON.stringify(sampleSource, null, 2);
-            specInput.value = JSON.stringify(sampleSpec, null, 2);
-            executeProjection();
+  <script type="module">
+    let selectJson;
+    try {
+      const mod = await import("https://cdn.jsdelivr.net/gh/keshavsoft/select-json-by-json@main/docs/dist/min.js");
+      selectJson = mod.selectJson || globalThis.ks?.selectJson;
+    } catch (e) {
+      // Fallback
+      const isObject = v => v !== null && typeof v === "object";
+      const isPlainObject = v => isObject(v) && !Array.isArray(v);
+      const selectValue = (source, spec) => {
+        if (!isObject(source) || !isPlainObject(spec)) return undefined;
+        if (Array.isArray(source)) return source.map(item => selectValue(item, spec)).filter(item => item !== undefined);
+        const result = {};
+        Object.entries(spec).forEach(([key, rule]) => {
+          if (!(key in source)) return;
+          if (rule === true || rule === 1) { result[key] = source[key]; return; }
+          if (isPlainObject(rule)) {
+            const selected = selectValue(source[key], rule);
+            if (selected !== undefined) result[key] = selected;
+          }
         });
+        return result;
+      };
+      selectJson = (source, spec) => selectValue(source, spec);
+    }
 
-        // Run on start
-        executeProjection();
-    </script>
+    const presets = {
+      invoices: {
+        source: [
+          {
+            "INVOICE_NUMBER": 1001,
+            "TRANSACTION_DATE": "2026-09-24",
+            "CUSTOMER_NAME": "Alpha Global Industries",
+            "INTERNAL_AUDIT_CODE": "SEC-9912",
+            "TOTAL_TAX": 180.50,
+            "ALL_INVENTORY_ENTRIES_LIST": [
+              {
+                "PRODUCT_NAME": "Industrial Power Cable",
+                "UNIT_RATE": 120.0,
+                "AMOUNT_VALUE": 6000.0,
+                "INTERNAL_REMARKS": "Dock 4 delivery",
+                "BATCH_ALLOCATIONS_LIST": [
+                  { "BATCH_ID": "LOT-901", "QTY_VALUE": 50, "MFG_DATE": "2026-01-10" }
+                ]
+              },
+              {
+                "PRODUCT_NAME": "Reinforced Mesh Roll",
+                "UNIT_RATE": 45.5,
+                "AMOUNT_VALUE": 910.0,
+                "INTERNAL_REMARKS": "Pallet delivery",
+                "BATCH_ALLOCATIONS_LIST": [
+                  { "BATCH_ID": "LOT-330", "QTY_VALUE": 20, "MFG_DATE": "2026-02-15" }
+                ]
+              }
+            ]
+          }
+        ],
+        spec: {
+          "INVOICE_NUMBER": true,
+          "TRANSACTION_DATE": true,
+          "CUSTOMER_NAME": true,
+          "ALL_INVENTORY_ENTRIES_LIST": {
+            "PRODUCT_NAME": true,
+            "AMOUNT_VALUE": true,
+            "BATCH_ALLOCATIONS_LIST": {
+              "BATCH_ID": true,
+              "QTY_VALUE": true
+            }
+          }
+        }
+      },
+      orders: {
+        source: [
+          {
+            "ORDER_IDENTIFIER": "ORD-5542",
+            "PURCHASE_TIMESTAMP": "2026-09-24T10:15:00Z",
+            "BUYER_FULL_NAME": "Sophia Martinez",
+            "PAYMENT_GATEWAY_TOKEN": "TOK_XYZ_881",
+            "PURCHASED_ITEMS_COLLECTION": [
+              {
+                "SKU_CODE": "SKU-990",
+                "ITEM_LABEL": "Wireless Sensor Node",
+                "PRICE_PER_UNIT": 85.0,
+                "ORDERED_QUANTITY": 4,
+                "WAREHOUSE_AISLE": "B-12"
+              }
+            ]
+          }
+        ],
+        spec: {
+          "ORDER_IDENTIFIER": true,
+          "PURCHASE_TIMESTAMP": true,
+          "BUYER_FULL_NAME": true,
+          "PURCHASED_ITEMS_COLLECTION": {
+            "SKU_CODE": true,
+            "ITEM_LABEL": true,
+            "PRICE_PER_UNIT": true
+          }
+        }
+      },
+      logistics: {
+        source: [
+          {
+            "WAYBILL_NUMBER": "WB-88190",
+            "DISPATCH_DATE": "2026-09-24",
+            "DESTINATION_HUB": "Central Distribution Hub",
+            "CARRIER_INTERNAL_ID": "TRK-0092",
+            "CARGO_MANIFEST_ITEMS": [
+              {
+                "CONTAINER_CODE": "C-901",
+                "WEIGHT_KG": 4200,
+                "INTERNAL_INSPECTION_FLAG": true,
+                "SEAL_IDENTIFIERS": { "SEAL_TAG": "SL-9941" }
+              }
+            ]
+          }
+        ],
+        spec: {
+          "WAYBILL_NUMBER": true,
+          "DISPATCH_DATE": true,
+          "DESTINATION_HUB": true,
+          "CARGO_MANIFEST_ITEMS": {
+            "CONTAINER_CODE": true,
+            "WEIGHT_KG": true,
+            "SEAL_IDENTIFIERS": {
+              "SEAL_TAG": true
+            }
+          }
+        }
+      }
+    };
+
+    const sourceInput = document.getElementById("sourceInput");
+    const specInput = document.getElementById("specInput");
+    const resultOutput = document.getElementById("resultOutput");
+    const statLatency = document.getElementById("statLatency");
+
+    function executeProjection() {
+      try {
+        const source = JSON.parse(sourceInput.value);
+        const spec = JSON.parse(specInput.value);
+
+        const t0 = performance.now();
+        const result = selectJson(source, spec);
+        const t1 = performance.now();
+
+        resultOutput.textContent = JSON.stringify(result, null, 2);
+        statLatency.textContent = `Latency: ${(t1 - t0).toFixed(2)} ms`;
+      } catch (err) {
+        resultOutput.textContent = `❌ ${err.message}`;
+        statLatency.textContent = "-";
+      }
+    }
+
+    function loadPreset(key) {
+      const p = presets[key];
+      if (!p) return;
+      sourceInput.value = JSON.stringify(p.source, null, 2);
+      specInput.value = JSON.stringify(p.spec, null, 2);
+      executeProjection();
+    }
+
+    const presetBtns = [
+      { id: "btnPresetInvoices", key: "invoices" },
+      { id: "btnPresetOrders", key: "orders" },
+      { id: "btnPresetLogistics", key: "logistics" }
+    ];
+
+    presetBtns.forEach(({ id, key }) => {
+      document.getElementById(id).addEventListener("click", (e) => {
+        document.querySelectorAll(".btn-preset").forEach(b => b.classList.remove("active"));
+        e.target.classList.add("active");
+        loadPreset(key);
+      });
+    });
+
+    // Real-time reactive updates
+    sourceInput.addEventListener("input", executeProjection);
+    specInput.addEventListener("input", executeProjection);
+
+    // Copy buttons
+    document.getElementById("btnCopyInput").addEventListener("click", () => copyText(sourceInput.value));
+    document.getElementById("btnCopySpec").addEventListener("click", () => copyText(specInput.value));
+    document.getElementById("btnCopyOutput").addEventListener("click", () => copyText(resultOutput.textContent));
+
+    function copyText(txt) {
+      navigator.clipboard.writeText(txt).then(() => alert("Copied to clipboard!"));
+    }
+
+    // Initial load
+    loadPreset("invoices");
+  </script>
 </body>
 </html>

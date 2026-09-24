@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>rename-json-keys — Deep-Dive Key Normalization Playground</title>
+  <title>rename-json-keys — Interactive Key Normalization Playground</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -21,11 +21,7 @@
       --code-bg: #050811;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       background-color: var(--bg);
@@ -49,7 +45,7 @@
     }
 
     .story-nav-inner {
-      max-width: 1280px;
+      max-width: 1400px;
       margin: 0 auto;
       display: flex;
       justify-content: space-between;
@@ -115,59 +111,114 @@
     }
 
     .container {
-      max-width: 1280px;
+      max-width: 1400px;
       margin: 0 auto;
-      padding: 2.5rem 1.5rem;
+      padding: 1.5rem;
     }
 
     header {
       text-align: center;
-      margin-bottom: 2.5rem;
+      margin-bottom: 1.5rem;
     }
 
     .badge {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.35rem 0.9rem;
+      padding: 0.3rem 0.8rem;
       border-radius: 9999px;
       background: rgba(56, 189, 248, 0.12);
       border: 1px solid rgba(56, 189, 248, 0.3);
       color: var(--accent);
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 600;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
 
     h1 {
-      font-size: 2.8rem;
+      font-size: 2.2rem;
       font-weight: 800;
       background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.35rem;
       letter-spacing: -0.02em;
     }
 
     .subtitle {
-      font-size: 1.15rem;
+      font-size: 0.95rem;
       color: var(--text-muted);
       max-width: 720px;
       margin: 0 auto;
-      line-height: 1.6;
+      line-height: 1.5;
     }
 
-    .grid {
+    /* Preset Toolbar */
+    .preset-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 0.75rem 1.25rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .preset-btns {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .preset-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-right: 0.25rem;
+    }
+
+    .btn-preset {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+      padding: 0.45rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-preset:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+
+    .btn-preset.active {
+      background: var(--accent);
+      color: #04101e;
+      border-color: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    /* 3-Column Responsive Playground */
+    .playground-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin-bottom: 2.5rem;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
     }
 
-    @media (max-width: 900px) {
-      .grid {
+    @media (max-width: 1024px) {
+      .playground-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -175,58 +226,44 @@
     .card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 1.5rem;
+      border-radius: 14px;
+      padding: 1.25rem;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
     }
 
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
     }
 
     .card-title {
-      font-size: 1.05rem;
+      font-size: 0.92rem;
       font-weight: 700;
       color: #fff;
-    }
-
-    .card-actions {
       display: flex;
-      gap: 0.5rem;
+      align-items: center;
+      gap: 0.4rem;
     }
 
-    button {
-      background: var(--accent);
-      color: #000;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      font-family: inherit;
+    .btn-action {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      border: 1px solid var(--card-border);
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
       font-weight: 600;
-      font-size: 0.85rem;
       cursor: pointer;
       transition: all 0.2s;
     }
 
-    button:hover {
-      box-shadow: 0 0 15px var(--accent-glow);
-      transform: translateY(-1px);
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text);
-      border: 1px solid var(--card-border);
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.15);
-      box-shadow: none;
+    .btn-action:hover {
+      background: rgba(255, 255, 255, 0.16);
+      color: #fff;
     }
 
     textarea, pre {
@@ -234,14 +271,14 @@
       height: 380px;
       background: var(--code-bg);
       border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 1rem;
+      border-radius: 8px;
+      padding: 0.85rem;
       font-family: 'Fira Code', monospace;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: #e2e8f0;
       resize: vertical;
       outline: none;
-      line-height: 1.5;
+      line-height: 1.45;
       overflow-y: auto;
     }
 
@@ -255,45 +292,12 @@
       word-break: break-all;
     }
 
-    .stats-bar {
-      margin-top: 1rem;
+    .stats-footer {
+      margin-top: 0.75rem;
       display: flex;
       justify-content: space-between;
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       color: var(--text-muted);
-    }
-
-    .doc-section {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 2rem;
-      margin-top: 3rem;
-    }
-
-    .doc-section h2 {
-      font-size: 1.4rem;
-      margin-bottom: 1rem;
-      color: #fff;
-    }
-
-    .doc-section p {
-      color: var(--text-muted);
-      line-height: 1.6;
-      margin-bottom: 1rem;
-      font-size: 0.95rem;
-    }
-
-    .code-block {
-      background: var(--code-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 1rem;
-      font-family: 'Fira Code', monospace;
-      font-size: 0.85rem;
-      color: #e2e8f0;
-      margin-bottom: 1.5rem;
-      overflow-x: auto;
     }
   </style>
 </head>
@@ -312,6 +316,7 @@
         <a href="2-rename.html" class="story-nav-link active">🏷️ 2. Rename</a>
         <a href="3-map.html" class="story-nav-link">🗺️ 3. Map</a>
         <a href="4-table.html" class="story-nav-link">📊 4. Table UI</a>
+        <a href="repos.html" class="story-nav-link">🌐 Repos &amp; Architecture</a>
       </div>
     </div>
   </nav>
@@ -319,138 +324,169 @@
   <div class="container">
     <header>
       <div class="badge">
-        <span>🏷️</span> Step 2: Key Normalization Engine
+        <span>🏷️</span> Step 2: Key Normalization Playground
       </div>
       <h1>rename-json-keys</h1>
       <p class="subtitle">
-        Deep dive into recursive key normalization across complex, deeply nested JSON objects and arrays. Input data is the source of truth.
+        Select a sample JSON dataset below. Both the source and dictionary load instantly, and the normalized output renders in real-time.
       </p>
     </header>
 
-    <!-- Editors Grid -->
-    <div class="grid">
-      <!-- Input Data -->
+    <!-- Preset Selector Bar -->
+    <div class="preset-toolbar">
+      <div class="preset-btns">
+        <span class="preset-label">Select JSON:</span>
+        <button class="btn-preset active" id="btnPresetInvoices">Invoices &amp; Inventory</button>
+        <button class="btn-preset" id="btnPresetOrders">E-Commerce Orders</button>
+        <button class="btn-preset" id="btnPresetLogistics">Logistics Waybills</button>
+      </div>
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <span id="statLatency" style="color: var(--success); font-size: 0.82rem; font-weight: 700;">Latency: 0.00 ms</span>
+      </div>
+    </div>
+
+    <!-- 3-Column Live Playground -->
+    <div class="playground-grid">
+      <!-- 1. Input Data -->
       <div class="card">
         <div class="card-header">
-          <span class="card-title">1. Raw Input JSON</span>
-          <div class="card-actions">
-            <button class="btn-secondary" id="btnResetData">Reset Data</button>
-          </div>
+          <span class="card-title"><span>📥</span> 1. Source JSON</span>
+          <button class="btn-action" id="btnCopyInput">📋 Copy</button>
         </div>
         <textarea id="inputData" spellcheck="false"></textarea>
       </div>
 
-      <!-- Mapping Dictionary -->
+      <!-- 2. Mapping Dictionary -->
       <div class="card">
         <div class="card-header">
-          <span class="card-title">2. Rename Dictionary Spec</span>
-          <div class="card-actions">
-            <button class="btn-secondary" id="btnResetKeys">Reset Spec</button>
-          </div>
+          <span class="card-title"><span>🏷️</span> 2. Rename Dictionary</span>
+          <button class="btn-action" id="btnCopyKeys">📋 Copy</button>
         </div>
         <textarea id="inputKeys" spellcheck="false"></textarea>
       </div>
-    </div>
 
-    <!-- Controls -->
-    <div style="text-align: center; margin-bottom: 2rem; display: flex; justify-content: center; gap: 1rem;">
-      <button id="btnTransform" style="font-size: 1.05rem; padding: 0.8rem 2.2rem;">
-        ⚡ Run renameJsonKeys()
-      </button>
-      <a href="3-map.html" style="text-decoration: none;">
-        <button class="btn-secondary" style="font-size: 1.05rem; padding: 0.8rem 1.8rem;">
-          Next: Recipe 3 (Template Map) →
-        </button>
-      </a>
-    </div>
-
-    <!-- Output -->
-    <div class="card">
-      <div class="card-header">
-        <span class="card-title" style="color: var(--success);">
-          3. Renamed Output JSON
-        </span>
-        <div class="card-actions">
-          <button class="btn-secondary" id="btnCopyOutput">📋 Copy JSON</button>
+      <!-- 3. Live Renamed Result -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title" style="color: var(--success);"><span>✨</span> 3. Live Renamed Output</span>
+          <button class="btn-action" id="btnCopyOutput">📋 Copy</button>
+        </div>
+        <pre id="outputJson" style="color: var(--success);"></pre>
+        <div class="stats-footer">
+          <span>Keys replaced: <strong id="statCount">0</strong></span>
+          <span style="color: var(--success);">Instant Reactive Render</span>
         </div>
       </div>
-      <pre id="outputJson"></pre>
-      <div class="stats-bar">
-        <span>Execution Time: <strong id="statTime">0 ms</strong></span>
-        <span>Original Keys Replaced: <strong id="statCount">0</strong></span>
-      </div>
     </div>
 
-    <!-- Documentation Section -->
-    <div class="doc-section">
-      <h2>Quick API Guide</h2>
-      <p>Install via npm:</p>
-      <div class="code-block">npm install rename-json-keys</div>
-      
-      <p>Import from CDN or package in Node.js / browser:</p>
-      <div class="code-block">import { renameJsonKeys } from "https://cdn.jsdelivr.net/gh/keshavsoft/rename-json-keys@main/src/v1/rename.js";
-
-// Call with positional arguments or { inData, inKeys } options object
-const clean = renameJsonKeys(sourceData, {
-  "VOUCHER_ID": "id",
-  "TRANSACTION_DATE": "date",
-  "INVENTORY_ENTRIES_LIST": "items"
-});</div>
-    </div>
   </div>
 
   <script type="module">
     import { renameJsonKeys } from "https://cdn.jsdelivr.net/gh/keshavsoft/rename-json-keys@main/src/v1/rename.js";
 
-    const defaultData = [
-      {
-        "VOUCHER_ID": 1001,
-        "TRANSACTION_DATE": "2026-09-24",
-        "CUSTOMER_NAME": "Alpha Global Industries",
-        "INVENTORY_ENTRIES_LIST": [
+    // Presets
+    const presets = {
+      invoices: {
+        data: [
           {
-            "PRODUCT_CODE": "P-900",
-            "UNIT_RATE": 120.0,
-            "AMOUNT_VALUE": 6000.0,
-            "BATCH_ALLOCATIONS_LIST": [
-              { "BATCH_CODE": "B-901", "QTY_VALUE": 50 }
-            ]
-          },
-          {
-            "PRODUCT_CODE": "M-330",
-            "UNIT_RATE": 45.5,
-            "AMOUNT_VALUE": 910.0,
-            "BATCH_ALLOCATIONS_LIST": [
-              { "BATCH_CODE": "B-330", "QTY_VALUE": 20 }
+            "INVOICE_NUMBER": 1001,
+            "TRANSACTION_DATE": "2026-09-24",
+            "CUSTOMER_NAME": "Alpha Global Industries",
+            "ALL_INVENTORY_ENTRIES_LIST": [
+              {
+                "PRODUCT_NAME": "Industrial Power Cable",
+                "UNIT_RATE": 120.0,
+                "AMOUNT_VALUE": 6000.0,
+                "BATCH_ALLOCATIONS_LIST": [
+                  { "BATCH_ID": "LOT-901", "QTY_VALUE": 50 }
+                ]
+              },
+              {
+                "PRODUCT_NAME": "Reinforced Mesh Roll",
+                "UNIT_RATE": 45.5,
+                "AMOUNT_VALUE": 910.0,
+                "BATCH_ALLOCATIONS_LIST": [
+                  { "BATCH_ID": "LOT-330", "QTY_VALUE": 20 }
+                ]
+              }
             ]
           }
-        ]
+        ],
+        keys: {
+          "INVOICE_NUMBER": "invoiceNo",
+          "TRANSACTION_DATE": "date",
+          "CUSTOMER_NAME": "customer",
+          "ALL_INVENTORY_ENTRIES_LIST": "items",
+          "PRODUCT_NAME": "product",
+          "UNIT_RATE": "rate",
+          "AMOUNT_VALUE": "amount",
+          "BATCH_ALLOCATIONS_LIST": "batches",
+          "BATCH_ID": "batchId",
+          "QTY_VALUE": "qty"
+        }
+      },
+      orders: {
+        data: [
+          {
+            "ORDER_IDENTIFIER": "ORD-5542",
+            "PURCHASE_TIMESTAMP": "2026-09-24T10:15:00Z",
+            "BUYER_FULL_NAME": "Sophia Martinez",
+            "PURCHASED_ITEMS_COLLECTION": [
+              {
+                "SKU_CODE": "SKU-990",
+                "ITEM_LABEL": "Wireless Sensor Node",
+                "PRICE_PER_UNIT": 85.0,
+                "ORDERED_QUANTITY": 4
+              }
+            ]
+          }
+        ],
+        keys: {
+          "ORDER_IDENTIFIER": "orderId",
+          "PURCHASE_TIMESTAMP": "orderedAt",
+          "BUYER_FULL_NAME": "buyer",
+          "PURCHASED_ITEMS_COLLECTION": "items",
+          "SKU_CODE": "sku",
+          "ITEM_LABEL": "title",
+          "PRICE_PER_UNIT": "price",
+          "ORDERED_QUANTITY": "quantity"
+        }
+      },
+      logistics: {
+        data: [
+          {
+            "WAYBILL_NUMBER": "WB-88190",
+            "DISPATCH_DATE": "2026-09-24",
+            "DESTINATION_HUB": "Central Hub",
+            "CARGO_MANIFEST_ITEMS": [
+              {
+                "CONTAINER_CODE": "C-901",
+                "WEIGHT_KG": 4200,
+                "SEAL_IDENTIFIERS": { "SEAL_TAG": "SL-9941" }
+              }
+            ]
+          }
+        ],
+        keys: {
+          "WAYBILL_NUMBER": "trackingId",
+          "DISPATCH_DATE": "date",
+          "DESTINATION_HUB": "destination",
+          "CARGO_MANIFEST_ITEMS": "containers",
+          "CONTAINER_CODE": "container",
+          "WEIGHT_KG": "weight",
+          "SEAL_IDENTIFIERS": "seals",
+          "SEAL_TAG": "tag"
+        }
       }
-    ];
-
-    const defaultKeys = {
-      "VOUCHER_ID": "invoiceNo",
-      "TRANSACTION_DATE": "date",
-      "CUSTOMER_NAME": "customer",
-      "INVENTORY_ENTRIES_LIST": "items",
-      "PRODUCT_CODE": "product",
-      "UNIT_RATE": "rate",
-      "AMOUNT_VALUE": "amount",
-      "BATCH_ALLOCATIONS_LIST": "batches",
-      "BATCH_CODE": "batchId",
-      "QTY_VALUE": "qty"
     };
 
     const inputDataEl = document.getElementById("inputData");
     const inputKeysEl = document.getElementById("inputKeys");
     const outputJsonEl = document.getElementById("outputJson");
-    const statTimeEl = document.getElementById("statTime");
+    const statLatencyEl = document.getElementById("statLatency");
     const statCountEl = document.getElementById("statCount");
 
-    inputDataEl.value = JSON.stringify(defaultData, null, 2);
-    inputKeysEl.value = JSON.stringify(defaultKeys, null, 2);
-
-    function runTransform() {
+    function executeTransform() {
       try {
         const data = JSON.parse(inputDataEl.value);
         const keys = JSON.parse(inputKeysEl.value);
@@ -460,34 +496,52 @@ const clean = renameJsonKeys(sourceData, {
         const t1 = performance.now();
 
         outputJsonEl.textContent = JSON.stringify(result, null, 2);
-        statTimeEl.textContent = `${(t1 - t0).toFixed(2)} ms`;
+        statLatencyEl.textContent = `Latency: ${(t1 - t0).toFixed(2)} ms`;
         statCountEl.textContent = Object.keys(keys).length;
       } catch (err) {
-        outputJsonEl.textContent = `❌ Error: ${err.message}`;
-        statTimeEl.textContent = "-";
+        outputJsonEl.textContent = `❌ ${err.message}`;
+        statLatencyEl.textContent = "-";
       }
     }
 
-    document.getElementById("btnTransform").addEventListener("click", runTransform);
+    function loadPreset(key) {
+      const p = presets[key];
+      if (!p) return;
+      inputDataEl.value = JSON.stringify(p.data, null, 2);
+      inputKeysEl.value = JSON.stringify(p.keys, null, 2);
+      executeTransform();
+    }
 
-    document.getElementById("btnResetData").addEventListener("click", () => {
-      inputDataEl.value = JSON.stringify(defaultData, null, 2);
-      runTransform();
-    });
+    // Preset button event listeners
+    const presetBtns = [
+      { id: "btnPresetInvoices", key: "invoices" },
+      { id: "btnPresetOrders", key: "orders" },
+      { id: "btnPresetLogistics", key: "logistics" }
+    ];
 
-    document.getElementById("btnResetKeys").addEventListener("click", () => {
-      inputKeysEl.value = JSON.stringify(defaultKeys, null, 2);
-      runTransform();
-    });
-
-    document.getElementById("btnCopyOutput").addEventListener("click", () => {
-      navigator.clipboard.writeText(outputJsonEl.textContent).then(() => {
-        alert("Renamed JSON copied to clipboard!");
+    presetBtns.forEach(({ id, key }) => {
+      document.getElementById(id).addEventListener("click", (e) => {
+        document.querySelectorAll(".btn-preset").forEach(b => b.classList.remove("active"));
+        e.target.classList.add("active");
+        loadPreset(key);
       });
     });
 
-    // Run initially
-    runTransform();
+    // Real-time reactive updates on input typing
+    inputDataEl.addEventListener("input", executeTransform);
+    inputKeysEl.addEventListener("input", executeTransform);
+
+    // Copy buttons
+    document.getElementById("btnCopyInput").addEventListener("click", () => copyText(inputDataEl.value));
+    document.getElementById("btnCopyKeys").addEventListener("click", () => copyText(inputKeysEl.value));
+    document.getElementById("btnCopyOutput").addEventListener("click", () => copyText(outputJsonEl.textContent));
+
+    function copyText(txt) {
+      navigator.clipboard.writeText(txt).then(() => alert("Copied to clipboard!"));
+    }
+
+    // Initial load
+    loadPreset("invoices");
   </script>
 </body>
 </html>

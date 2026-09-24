@@ -30,16 +30,21 @@ Instead of writing imperative spaghetti loops to clean, pluck, and reshape data 
 
 ---
 
-## Micro-Engine Breakdown
+## Ecosystem Repositories Directory
 
-| Package | Mental Model | Source of Truth | Primary Purpose | Docs & Demos |
+> For detailed architecture explanations, design rationale, and API breakdowns, see the **[Ecosystem Repositories Guide (REPOSITORIES.md)](REPOSITORIES.md)**.
+
+| Package / Repository | Role / Responsibility | Mental Model | Official GitHub Repo | Live Docs & Playground |
 | :--- | :--- | :--- | :--- | :--- |
-| **[`select-json-by-json`](https://github.com/keshavsoft/select-json-by-json)** | **Data Projection** | Input Data | Pluck only the fields you need; preserve original shape and keys. | [Interactive Docs](https://keshavsoft.github.io/select-json-by-json/) |
-| **[`rename-json-keys`](https://github.com/keshavsoft/rename-json-keys)** | **Key Normalization** | Input Data | Recursively rename ugly keys (`INVENTORY_LIST` $\rightarrow$ `items`) across the entire tree. | [Interactive Docs](https://keshavsoft.github.io/rename-json-keys/) |
-| **[`map-json-by-json`](https://github.com/keshavsoft/map-json-by-json)** | **Contract Transformation** | Target Template | You define the exact target output shape; data is extracted into it. | [Interactive Docs](https://keshavsoft.github.io/map-json-by-json/) |
-| **[`json-to-tag-table`](https://github.com/keshavsoft/json-to-tag-table)** | **Visual Rendering** | Structured Data | Render interactive HTML drilldown tables for deep nested structures. | [GitHub Repo](https://github.com/keshavsoft/json-to-tag-table) |
+| **[`select-json-by-json`](https://github.com/keshavsoft/select-json-by-json)** | **1. Field Projection** | Input Data is Truth | [GitHub Repo](https://github.com/keshavsoft/select-json-by-json) | [Live Playground](https://keshavsoft.github.io/select-json-by-json/) |
+| **[`rename-json-keys`](https://github.com/keshavsoft/rename-json-keys)** | **2. Key Normalization** | Input Data is Truth | [GitHub Repo](https://github.com/keshavsoft/rename-json-keys) | [Live Playground](https://keshavsoft.github.io/rename-json-keys/) |
+| **[`map-json-by-json`](https://github.com/keshavsoft/map-json-by-json)** | **3. Contract Mapping** | Target Template is Truth | [GitHub Repo](https://github.com/keshavsoft/map-json-by-json) | [Live Playground](https://keshavsoft.github.io/map-json-by-json/) |
+| **[`json-to-tag-table`](https://github.com/keshavsoft/json-to-tag-table)** | **4. Table Drilldown** | Structured DOM Table | [GitHub Repo](https://github.com/keshavsoft/json-to-tag-table) | [Live Workbench](https://keshavsoft.github.io/json-transform-recipes/) |
+| **[`json-to-tag`](https://github.com/keshavsoft/json-to-tag)** | **5. Declarative Compiler** | Tag Schema Catalog | [GitHub Repo](https://github.com/keshavsoft/json-to-tag) | [Catalog & Tools](https://keshavsoft.github.io/json-to-tag/) |
+| **[`json-transform-recipes`](https://github.com/keshavsoft/json-transform-recipes)** | **Full Pipeline Showcase** | End-to-End Orchestration | [GitHub Repo](https://github.com/keshavsoft/json-transform-recipes) | [Live Workbench](https://keshavsoft.github.io/json-transform-recipes/) |
 
 ---
+
 
 ## Recipes
 
