@@ -1,0 +1,34 @@
+[
+  {
+    "DATE": "2026-09-24",
+    "INVOICE_NUMBER": 1001,
+    "TRANSACTION_TYPE": "Sales",
+    "CUSTOMER_NAME": "Alpha Corporation",
+    "ALL_INVENTORY_ENTRIES_LIST": [
+      {
+        "ITEM_NAME": "Industrial Power Cable",
+        "QUANTITY": 50,
+        "UNIT_PRICE": 120.00,
+        "TOTAL_AMOUNT": 6000.00,
+        "BATCH_ALLOCATIONS_LIST": [
+          {
+            "BATCH_NUMBER": "B-901",
+            "ALLOCATED_QTY": 50
+          }
+        ]
+      },
+      {
+        "ITEM_NAME": "Reinforced Fiber Mesh",
+        "QUANTITY": 20,
+        "UNIT_PRICE": 45.50,
+        "TOTAL_AMOUNT": 910.00,
+        "BATCH_ALLOCATIONS_LIST": [
+          {
+            "BATCH_NUMBER": "M-330",
+            "ALLOCATED_QTY": 20
+          }
+        ]
+      }
+    ]
+  }
+]

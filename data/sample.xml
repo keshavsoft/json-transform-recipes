@@ -1,0 +1,44 @@
+<ENVELOPE>
+  <HEADER>
+    <VERSION>1</VERSION>
+    <STATUS>SUCCESS</STATUS>
+  </HEADER>
+  <BODY>
+    <DATA>
+      <COLLECTION>
+        <TRANSACTION>
+          <DATE>2026-09-24</DATE>
+          <INVOICE_NUMBER>1001</INVOICE_NUMBER>
+          <TRANSACTION_TYPE>Sales</TRANSACTION_TYPE>
+          <CUSTOMER_NAME>Alpha Corporation</CUSTOMER_NAME>
+          <ALL_INVENTORY_ENTRIES_LIST>
+            <ENTRY>
+              <ITEM_NAME>Industrial Power Cable</ITEM_NAME>
+              <QUANTITY>50</QUANTITY>
+              <UNIT_PRICE>120.00</UNIT_PRICE>
+              <TOTAL_AMOUNT>6000.00</TOTAL_AMOUNT>
+              <BATCH_ALLOCATIONS_LIST>
+                <BATCH>
+                  <BATCH_NUMBER>B-901</BATCH_NUMBER>
+                  <ALLOCATED_QTY>50</ALLOCATED_QTY>
+                </BATCH>
+              </BATCH_ALLOCATIONS_LIST>
+            </ENTRY>
+            <ENTRY>
+              <ITEM_NAME>Reinforced Fiber Mesh</ITEM_NAME>
+              <QUANTITY>20</QUANTITY>
+              <UNIT_PRICE>45.50</UNIT_PRICE>
+              <TOTAL_AMOUNT>910.00</TOTAL_AMOUNT>
+              <BATCH_ALLOCATIONS_LIST>
+                <BATCH>
+                  <BATCH_NUMBER>M-330</BATCH_NUMBER>
+                  <ALLOCATED_QTY>20</ALLOCATED_QTY>
+                </BATCH>
+              </BATCH_ALLOCATIONS_LIST>
+            </ENTRY>
+          </ALL_INVENTORY_ENTRIES_LIST>
+        </TRANSACTION>
+      </COLLECTION>
+    </DATA>
+  </BODY>
+</ENVELOPE>

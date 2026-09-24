@@ -1,0 +1,21 @@
+{
+  "name": "json-transform-recipes",
+  "version": "1.0.0",
+  "description": "End-to-end cookbook and showcase for XML parsing, JSON field selection, key renaming, template mapping, and UI table rendering.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "demo": "node examples/5-full-pipeline.js"
+  },
+  "keywords": [
+    "xml-to-json",
+    "json-transform",
+    "json-pipeline",
+    "json-projection",
+    "rename-keys",
+    "template-mapping",
+    "recipes"
+  ],
+  "author": "KeshavSoft",
+  "license": "MIT"
+}

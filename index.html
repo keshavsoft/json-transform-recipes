@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON Transformation Recipes — Architecture & Interactive Showcase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(18, 25, 43, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --accent-green: #34d399;
+      --accent-purple: #818cf8;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --code-bg: #040711;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      padding: 2.5rem 1.5rem;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(56, 189, 248, 0.12), transparent),
+        radial-gradient(ellipse 60% 40% at 90% 40%, rgba(129, 140, 248, 0.08), transparent);
+    }
+
+    .container { max-width: 1280px; margin: 0 auto; }
+
+    header { text-align: center; margin-bottom: 2.5rem; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: 9999px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.75rem;
+    }
+
+    .subtitle {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Pipeline Architecture Ribbon */
+    .pipeline-flow {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 2.5rem 0;
+      flex-wrap: wrap;
+    }
+
+    .step-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      text-align: center;
+      min-width: 190px;
+    }
+
+    .step-number {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .step-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .step-arrow {
+      color: var(--text-muted);
+      font-size: 1.2rem;
+    }
+
+    /* Navigation Tabs */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 0.7rem 1.4rem;
+      border-radius: 10px;
+      font-family: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text);
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #04101e;
+      border-color: var(--accent);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    /* Tab Content Panes */
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.75rem;
+      backdrop-filter: blur(16px);
+      margin-bottom: 2rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 900px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    pre, textarea {
+      width: 100%;
+      height: 340px;
+      background: var(--code-bg);
+      color: #38bdf8;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 1rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      overflow: auto;
+      white-space: pre;
+      outline: none;
+    }
+
+    textarea {
+      color: #f1f5f9;
+      resize: vertical;
+    }
+
+    button.action-btn {
+      background: var(--accent);
+      color: #04101e;
+      border: none;
+      font-family: inherit;
+      font-weight: 700;
+      padding: 0.65rem 1.4rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      box-shadow: 0 0 15px var(--accent-glow);
+      transition: all 0.2s ease;
+    }
+
+    button.action-btn:hover {
+      background: #7dd3fc;
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="badge">Architecture & Reference Hub</div>
+      <h1>JSON Transformation Recipes</h1>
+      <p class="subtitle">
+        Declarative data pipeline: from raw XML and enterprise JSON, through field selection and key normalization, to schema contract templating.
+      </p>
+    </header>
+
+    <!-- Pipeline Ribbon -->
+    <div class="pipeline-flow">
+      <div class="step-box">
+        <div class="step-number">Step 1</div>
+        <div class="step-title">Raw XML / JSON</div>
+      </div>
+      <div class="step-arrow">➔</div>
+      <div class="step-box">
+        <div class="step-number">Step 2: Projection</div>
+        <div class="step-title">select-json-by-json</div>
+      </div>
+      <div class="step-arrow">➔</div>
+      <div class="step-box">
+        <div class="step-number">Step 3: Normalization</div>
+        <div class="step-title">rename-json-keys</div>
+      </div>
+      <div class="step-arrow">➔</div>
+      <div class="step-box">
+        <div class="step-number">Step 4: Contract</div>
+        <div class="step-title">map-json-by-json</div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="tab-select">1. select-json-by-json</button>
+      <button class="tab-btn" data-tab="tab-rename">2. rename-json-keys</button>
+      <button class="tab-btn" data-tab="tab-map">3. map-json-by-json</button>
+      <button class="tab-btn" data-tab="tab-pipeline">4. Full Pipeline Demo</button>
+    </div>
+
+    <!-- TAB 1: select-json-by-json -->
+    <div id="tab-select" class="tab-pane active">
+      <div class="card">
+        <h3 style="margin-bottom: 0.5rem; color: var(--accent);">Pure Field Selection</h3>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+          Filters and keeps only specified keys recursively. Preserves original key names and array hierarchies.
+        </p>
+        <div class="grid-2">
+          <div>
+            <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Projection Spec:</label>
+            <textarea id="specSelect" spellcheck="false"></textarea>
+          </div>
+          <div>
+            <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Projected Output:</label>
+            <pre id="outSelect"></pre>
+          </div>
+        </div>
+        <div style="margin-top: 1rem; text-align: right;">
+          <button class="action-btn" id="btnRunSelect">⚡ Run selectJson()</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: rename-json-keys -->
+    <div id="tab-rename" class="tab-pane">
+      <div class="card">
+        <h3 style="margin-bottom: 0.5rem; color: var(--accent-green);">Recursive Key Normalization</h3>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+          Data is the source of truth. Replaces cumbersome uppercase/dot-notated keys with clean, developer-friendly names.
+        </p>
+        <div class="grid-2">
+          <div>
+            <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Key Mapping Dictionary:</label>
+            <textarea id="specRename" spellcheck="false"></textarea>
+          </div>
+          <div>
+            <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Renamed Output:</label>
+            <pre id="outRename" style="color: var(--accent-green);"></pre>
+          </div>
+        </div>
+        <div style="margin-top: 1rem; text-align: right;">
+          <button class="action-btn" id="btnRunRename" style="background: var(--accent-green);">⚡ Run renameJsonKeys()</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: map-json-by-json -->
+    <div id="tab-map" class="tab-pane">
+      <div class="card">
+        <h3 style="margin-bottom: 0.5rem; color: var(--accent-purple);">Target Template Reshaping</h3>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+          Target template is the source of truth. You declare the exact final structure; data is extracted into it.
+        </p>
+        <div class="grid-2">
+          <div>
+            <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Target Template Contract:</label>
+            <textarea id="specMap" spellcheck="false"></textarea>
+          </div>
+          <div>
+            <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Reshaped Contract Output:</label>
+            <pre id="outMap" style="color: #a5b4fc;"></pre>
+          </div>
+        </div>
+        <div style="margin-top: 1rem; text-align: right;">
+          <button class="action-btn" id="btnRunMap" style="background: var(--accent-purple);">⚡ Run mapJson()</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: Full Pipeline -->
+    <div id="tab-pipeline" class="tab-pane">
+      <div class="card">
+        <h3 style="margin-bottom: 0.5rem; color: #f59e0b;">Full End-to-End Pipeline</h3>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+          Raw Enterprise Data ➔ Projected by <code>selectJson</code> ➔ Renamed by <code>renameJsonKeys</code>.
+        </p>
+        <div class="grid-2">
+          <div>
+            <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Raw Input Data:</label>
+            <textarea id="rawPipeline" spellcheck="false"></textarea>
+          </div>
+          <div>
+            <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Final Production JSON:</label>
+            <pre id="outPipeline" style="color: #fbbf24;"></pre>
+          </div>
+        </div>
+        <div style="margin-top: 1rem; text-align: right;">
+          <button class="action-btn" id="btnRunPipeline" style="background: #f59e0b;">⚡ Run Full Pipeline</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { selectJson } from "../select-json-by-json/index.js";
+    import { renameJsonKeys } from "../rename-json-keys/index.js";
+    import { mapJson } from "../map-json-by-json/index.js";
+
+    const sampleData = [
+      {
+        "DATE": "2026-09-24",
+        "INVOICE_NUMBER": 1001,
+        "CUSTOMER_NAME": "Alpha Corporation",
+        "ALL_INVENTORY_ENTRIES_LIST": [
+          {
+            "ITEM_NAME": "Industrial Power Cable",
+            "QUANTITY": 50,
+            "TOTAL_AMOUNT": 6000.00,
+            "BATCH_ALLOCATIONS_LIST": [
+              { "BATCH_NUMBER": "B-901", "ALLOCATED_QTY": 50 }
+            ]
+          }
+        ]
+      }
+    ];
+
+    // Tab switching
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById(btn.dataset.tab).classList.add("active");
+      });
+    });
+
+    // 1. Select
+    const specSelectEl = document.getElementById("specSelect");
+    const outSelectEl = document.getElementById("outSelect");
+    specSelectEl.value = JSON.stringify({
+      DATE: true,
+      INVOICE_NUMBER: true,
+      ALL_INVENTORY_ENTRIES_LIST: {
+        ITEM_NAME: true,
+        TOTAL_AMOUNT: true
+      }
+    }, null, 2);
+
+    function runSelect() {
+      try {
+        const spec = JSON.parse(specSelectEl.value);
+        outSelectEl.textContent = JSON.stringify(selectJson(sampleData, spec), null, 2);
+      } catch (err) { outSelectEl.textContent = err.message; }
+    }
+    document.getElementById("btnRunSelect").addEventListener("click", runSelect);
+    runSelect();
+
+    // 2. Rename
+    const specRenameEl = document.getElementById("specRename");
+    const outRenameEl = document.getElementById("outRename");
+    specRenameEl.value = JSON.stringify({
+      DATE: "date",
+      INVOICE_NUMBER: "invoiceNo",
+      CUSTOMER_NAME: "customer",
+      ALL_INVENTORY_ENTRIES_LIST: "items",
+      ITEM_NAME: "name",
+      TOTAL_AMOUNT: "amount",
+      BATCH_ALLOCATIONS_LIST: "batches",
+      BATCH_NUMBER: "batch"
+    }, null, 2);
+
+    function runRename() {
+      try {
+        const keys = JSON.parse(specRenameEl.value);
+        outRenameEl.textContent = JSON.stringify(renameJsonKeys(sampleData, keys), null, 2);
+      } catch (err) { outRenameEl.textContent = err.message; }
+    }
+    document.getElementById("btnRunRename").addEventListener("click", runRename);
+    runRename();
+
+    // 3. Map
+    const specMapEl = document.getElementById("specMap");
+    const outMapEl = document.getElementById("outMap");
+    specMapEl.value = JSON.stringify({
+      invoice: "INVOICE_NUMBER",
+      issuedOn: "DATE",
+      client: "CUSTOMER_NAME",
+      lineItems: {
+        $from: "ALL_INVENTORY_ENTRIES_LIST",
+        product: "ITEM_NAME",
+        subtotal: "TOTAL_AMOUNT"
+      }
+    }, null, 2);
+
+    function runMap() {
+      try {
+        const template = JSON.parse(specMapEl.value);
+        outMapEl.textContent = JSON.stringify(mapJson(template, sampleData), null, 2);
+      } catch (err) { outMapEl.textContent = err.message; }
+    }
+    document.getElementById("btnRunMap").addEventListener("click", runMap);
+    runMap();
+
+    // 4. Pipeline
+    const rawPipelineEl = document.getElementById("rawPipeline");
+    const outPipelineEl = document.getElementById("outPipeline");
+    rawPipelineEl.value = JSON.stringify(sampleData, null, 2);
+
+    function runPipeline() {
+      try {
+        const raw = JSON.parse(rawPipelineEl.value);
+        const filtered = selectJson(raw, {
+          INVOICE_NUMBER: true,
+          DATE: true,
+          ALL_INVENTORY_ENTRIES_LIST: {
+            ITEM_NAME: true,
+            TOTAL_AMOUNT: true
+          }
+        });
+        const final = renameJsonKeys(filtered, {
+          INVOICE_NUMBER: "id",
+          DATE: "date",
+          ALL_INVENTORY_ENTRIES_LIST: "items",
+          ITEM_NAME: "title",
+          TOTAL_AMOUNT: "total"
+        });
+        outPipelineEl.textContent = JSON.stringify(final, null, 2);
+      } catch (err) { outPipelineEl.textContent = err.message; }
+    }
+    document.getElementById("btnRunPipeline").addEventListener("click", runPipeline);
+    runPipeline();
+  </script>
+</body>
+</html>
