@@ -406,9 +406,104 @@
       font-size: 0.82rem;
       color: var(--text-muted);
     }
+
+    /* Unified Story Nav */
+    .story-global-nav {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(7, 10, 18, 0.92);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0.65rem 1.5rem;
+      margin: -2rem -1.5rem 2rem -1.5rem;
+    }
+
+    .story-nav-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .story-nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .story-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      padding: 0.2rem 0.55rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .brand-title {
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+    }
+
+    .story-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .story-nav-link {
+      padding: 0.35rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .story-nav-link:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .story-nav-link.active {
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
   </style>
 </head>
 <body>
+
+  <!-- Unified Story Global Nav -->
+  <nav class="story-global-nav">
+    <div class="story-nav-inner">
+      <div class="story-nav-brand">
+        <span class="story-pill">Master Workbench</span>
+        <a href="index.html" class="brand-title">JSON Transform Suite</a>
+      </div>
+      <div class="story-nav-links">
+        <a href="index.html" class="story-nav-link active">🚀 Workbench</a>
+        <a href="1-select.html" class="story-nav-link">⚡ 1. Select</a>
+        <a href="2-rename.html" class="story-nav-link">🏷️ 2. Rename</a>
+        <a href="3-map.html" class="story-nav-link">🗺️ 3. Map</a>
+        <a href="4-table.html" class="story-nav-link">📊 4. Table UI</a>
+      </div>
+    </div>
+  </nav>
 
   <div class="container">
     <!-- Header -->
