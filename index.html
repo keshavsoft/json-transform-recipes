@@ -423,17 +423,20 @@
       </p>
 
       <div class="repo-links">
-        <a href="https://github.com/keshavsoft/select-json-by-json" target="_blank" class="repo-link">
-          <span>⚡</span> select-json-by-json
+        <a href="https://keshavsoft.github.io/select-json-by-json/" target="_blank" class="repo-link" title="Interactive Docs & Playground">
+          <span>⚡</span> select-json-by-json Docs
         </a>
-        <a href="https://github.com/keshavsoft/rename-json-keys" target="_blank" class="repo-link">
-          <span>🏷️</span> rename-json-keys
+        <a href="https://keshavsoft.github.io/rename-json-keys/" target="_blank" class="repo-link" title="Interactive Docs & Playground">
+          <span>🏷️</span> rename-json-keys Docs
         </a>
-        <a href="https://github.com/keshavsoft/map-json-by-json" target="_blank" class="repo-link">
-          <span>🗺️</span> map-json-by-json
+        <a href="https://keshavsoft.github.io/map-json-by-json/" target="_blank" class="repo-link" title="Interactive Docs & Playground">
+          <span>🗺️</span> map-json-by-json Docs
         </a>
-        <a href="https://github.com/keshavsoft/json-to-tag-table" target="_blank" class="repo-link">
+        <a href="https://github.com/keshavsoft/json-to-tag-table" target="_blank" class="repo-link" title="GitHub Repository">
           <span>📊</span> json-to-tag-table
+        </a>
+        <a href="https://github.com/keshavsoft/json-transform-recipes" target="_blank" class="repo-link" title="Showcase Repository">
+          <span>📂</span> Recipes Repo
         </a>
       </div>
     </header>
@@ -597,7 +600,7 @@
     import { mapJson } from "https://cdn.jsdelivr.net/gh/keshavsoft/map-json-by-json@main/src/v1/map.js";
 
     // selectJson from CDN bundle (via globalThis.ks.selectJson)
-    const selectJson = globalThis.ks?.selectJson || (source, spec) => source;
+    const selectJson = (source, spec) => (typeof globalThis.ks?.selectJson === "function" ? globalThis.ks.selectJson(source, spec) : source);
 
     // Presets
     const presets = {

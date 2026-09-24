@@ -32,11 +32,12 @@ Instead of writing imperative spaghetti loops to clean, pluck, and reshape data 
 
 ## Micro-Engine Breakdown
 
-| Package | Mental Model | Source of Truth | Primary Purpose |
-| :--- | :--- | :--- | :--- |
-| **[`select-json-by-json`](../select-json-by-json)** | **Data Projection** | Input Data | Pluck only the fields you need; preserve original shape and keys. |
-| **[`rename-json-keys`](../rename-json-keys)** | **Key Normalization** | Input Data | Recursively rename ugly keys (`INVENTORY_LIST` $\rightarrow$ `items`) across the entire tree. |
-| **[`map-json-by-json`](../map-json-by-json)** | **Contract Transformation** | Target Template | You define the exact target output shape; data is extracted into it. |
+| Package | Mental Model | Source of Truth | Primary Purpose | Docs & Demos |
+| :--- | :--- | :--- | :--- | :--- |
+| **[`select-json-by-json`](https://github.com/keshavsoft/select-json-by-json)** | **Data Projection** | Input Data | Pluck only the fields you need; preserve original shape and keys. | [Interactive Docs](https://keshavsoft.github.io/select-json-by-json/) |
+| **[`rename-json-keys`](https://github.com/keshavsoft/rename-json-keys)** | **Key Normalization** | Input Data | Recursively rename ugly keys (`INVENTORY_LIST` $\rightarrow$ `items`) across the entire tree. | [Interactive Docs](https://keshavsoft.github.io/rename-json-keys/) |
+| **[`map-json-by-json`](https://github.com/keshavsoft/map-json-by-json)** | **Contract Transformation** | Target Template | You define the exact target output shape; data is extracted into it. | [Interactive Docs](https://keshavsoft.github.io/map-json-by-json/) |
+| **[`json-to-tag-table`](https://github.com/keshavsoft/json-to-tag-table)** | **Visual Rendering** | Structured Data | Render interactive HTML drilldown tables for deep nested structures. | [GitHub Repo](https://github.com/keshavsoft/json-to-tag-table) |
 
 ---
 
