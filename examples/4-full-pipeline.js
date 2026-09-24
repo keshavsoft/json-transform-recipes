@@ -1,5 +1,5 @@
-import { selectJson } from "../../select-json-by-json/index.js";
-import { renameJsonKeys } from "../../rename-json-keys/index.js";
+import { selectJson } from "../../../select-json-by-json/index.js";
+import { renameJsonKeys } from "../../../rename-json-keys/index.js";
 import sampleData from "../data/sample.json" with { type: "json" };
 
 console.log("=== Recipe 4: The Clean Pipeline (Select -> Rename) ===");

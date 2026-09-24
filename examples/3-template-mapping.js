@@ -1,4 +1,4 @@
-import { mapJson } from "../../map-json-by-json/index.js";
+import { mapJson } from "../../../map-json-by-json/index.js";
 import sampleData from "../data/sample.json" with { type: "json" };
 
 console.log("=== Recipe 3: Template-Driven Reshaping (map-json-by-json) ===");

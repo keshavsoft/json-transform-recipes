@@ -1,4 +1,4 @@
-import { selectJson } from "../../select-json-by-json/index.js";
+import { selectJson } from "../../../select-json-by-json/index.js";
 import sampleData from "../data/sample.json" with { type: "json" };
 
 console.log("=== Recipe 1: Pure Field Selection (select-json-by-json) ===");

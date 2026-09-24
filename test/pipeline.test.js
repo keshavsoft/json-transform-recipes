@@ -1,8 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { selectJson } from "../../select-json-by-json/index.js";
-import { renameJsonKeys } from "../../rename-json-keys/index.js";
-import { mapJson } from "../../map-json-by-json/index.js";
+import { selectJson } from "../../../select-json-by-json/index.js";
+import { renameJsonKeys } from "../../../rename-json-keys/index.js";
+import { mapJson } from "../../../map-json-by-json/index.js";
 import sampleData from "../data/sample.json" with { type: "json" };
 
 test("recipe 1: select-json-by-json filters required fields", () => {

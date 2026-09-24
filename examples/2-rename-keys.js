@@ -1,4 +1,4 @@
-import { renameJsonKeys } from "../../rename-json-keys/index.js";
+import { renameJsonKeys } from "../../../rename-json-keys/index.js";
 import sampleData from "../data/sample.json" with { type: "json" };
 
 console.log("=== Recipe 2: Recursive Key Renaming (rename-json-keys) ===");
