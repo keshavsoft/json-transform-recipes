@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ecosystem Repositories & Architecture — JSON Transform Suite</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <style>
     :root {
       --bg: #070a13;
@@ -24,14 +27,18 @@
       --code-bg: #030712;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       background-color: var(--bg);
       color: var(--text);
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       min-height: 100vh;
-      background-image: 
+      background-image:
         radial-gradient(ellipse 80% 50% at 50% -20%, rgba(56, 189, 248, 0.12), transparent),
         radial-gradient(ellipse 60% 40% at 100% 50%, rgba(129, 140, 248, 0.08), transparent),
         radial-gradient(ellipse 60% 40% at 0% 80%, rgba(52, 211, 153, 0.06), transparent);
@@ -49,7 +56,7 @@
     }
 
     .story-nav-inner {
-      max-width: 1320px;
+      max-width: 1600px;
       margin: 0 auto;
       display: flex;
       justify-content: space-between;
@@ -115,7 +122,7 @@
     }
 
     .container {
-      max-width: 1320px;
+      max-width: 1600px;
       margin: 0 auto;
       padding: 2.5rem 1.5rem 4rem 1.5rem;
     }
@@ -159,435 +166,6 @@
       line-height: 1.65;
     }
 
-    /* Architectural Choice Banner */
-    .arch-banner {
-      background: linear-gradient(145deg, rgba(16, 24, 40, 0.95), rgba(15, 23, 42, 0.85));
-      border: 1px solid rgba(129, 140, 248, 0.25);
-      border-radius: 18px;
-      padding: 2rem;
-      margin-bottom: 3rem;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .arch-banner::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: var(--accent-gradient);
-    }
-
-    .arch-banner-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .arch-title-wrap {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .arch-title-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 10px;
-      background: rgba(129, 140, 248, 0.2);
-      border: 1px solid rgba(129, 140, 248, 0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.3rem;
-    }
-
-    .arch-title-text h2 {
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: #fff;
-    }
-
-    .arch-title-text p {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-    }
-
-    .arch-comparison-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin-top: 1rem;
-    }
-
-    @media (max-width: 900px) {
-      .arch-comparison-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .arch-box {
-      background: var(--code-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 1.35rem;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-    }
-
-    .arch-box.featured {
-      border-color: rgba(56, 189, 248, 0.4);
-      box-shadow: 0 0 25px rgba(56, 189, 248, 0.12);
-    }
-
-    .arch-box-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.25rem 0.65rem;
-      border-radius: 6px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.75rem;
-      width: fit-content;
-    }
-
-    .arch-box-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #ffffff;
-      margin-bottom: 0.5rem;
-    }
-
-    .arch-box-desc {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      line-height: 1.55;
-      margin-bottom: 1rem;
-    }
-
-    .arch-flow-diagram {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 8px;
-      padding: 0.75rem 1rem;
-      margin-bottom: 1rem;
-      font-size: 0.78rem;
-      color: #cbd5e1;
-      font-family: 'Fira Code', monospace;
-    }
-
-    .arch-flow-diagram .step-tag {
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    .arch-flow-diagram .step-arrow {
-      color: var(--text-muted);
-      margin: 0 0.35rem;
-    }
-
-    .arch-box-features {
-      list-style: none;
-      font-size: 0.82rem;
-      color: #cbd5e1;
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-      margin-top: auto;
-      padding-top: 0.75rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .arch-box-features li {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.5rem;
-    }
-
-    .arch-box-features li span.icon {
-      color: var(--accent-green);
-      font-weight: 700;
-    }
-
-    /* Featured node-json-transformer Spotlight Card */
-    .spotlight-card {
-      background: linear-gradient(135deg, rgba(16, 24, 40, 0.95), rgba(18, 30, 52, 0.95));
-      border: 1px solid rgba(56, 189, 248, 0.35);
-      border-radius: 18px;
-      padding: 2rem;
-      margin-bottom: 3rem;
-      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.4), 0 0 30px rgba(56, 189, 248, 0.15);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .spotlight-glow {
-      position: absolute;
-      top: -100px;
-      right: -100px;
-      width: 300px;
-      height: 300px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(56, 189, 248, 0.18), transparent 70%);
-      pointer-events: none;
-    }
-
-    .spotlight-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 1.25rem;
-    }
-
-    .spotlight-title-group {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .spotlight-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      background: rgba(56, 189, 248, 0.15);
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.6rem;
-    }
-
-    .spotlight-title {
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      flex-wrap: wrap;
-    }
-
-    .spotlight-badge {
-      background: linear-gradient(135deg, #38bdf8, #818cf8);
-      color: #030712;
-      font-size: 0.72rem;
-      font-weight: 800;
-      padding: 0.25rem 0.65rem;
-      border-radius: 9999px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .spotlight-desc {
-      font-size: 0.96rem;
-      color: #cbd5e1;
-      line-height: 1.65;
-      margin-bottom: 1.5rem;
-      max-width: 1000px;
-    }
-
-    .spotlight-tasks-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1rem;
-      margin-bottom: 1.75rem;
-    }
-
-    .task-pill-card {
-      background: rgba(3, 7, 18, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
-    }
-
-    .task-pill-head {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.85rem;
-      font-weight: 700;
-    }
-
-    .task-pill-desc {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      line-height: 1.45;
-    }
-
-    /* Live Interactive Sandbox for node-json-transformer */
-    .sandbox-container {
-      background: var(--code-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      overflow: hidden;
-      margin-bottom: 1.5rem;
-    }
-
-    .sandbox-topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(255, 255, 255, 0.03);
-      border-bottom: 1px solid var(--card-border);
-      padding: 0.6rem 1rem;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .sandbox-tabs {
-      display: flex;
-      gap: 0.4rem;
-    }
-
-    .sandbox-tab {
-      padding: 0.3rem 0.7rem;
-      border-radius: 6px;
-      font-size: 0.76rem;
-      font-weight: 600;
-      cursor: pointer;
-      background: transparent;
-      border: 1px solid transparent;
-      color: var(--text-muted);
-      font-family: inherit;
-    }
-
-    .sandbox-tab.active {
-      background: rgba(56, 189, 248, 0.15);
-      border-color: rgba(56, 189, 248, 0.3);
-      color: var(--accent);
-    }
-
-    .sandbox-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .btn-run-transform {
-      background: linear-gradient(135deg, #38bdf8, #2563eb);
-      color: #fff;
-      font-weight: 700;
-      font-size: 0.78rem;
-      padding: 0.38rem 0.85rem;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      transition: all 0.2s ease;
-    }
-
-    .btn-run-transform:hover {
-      box-shadow: 0 0 15px var(--accent-glow);
-      transform: translateY(-1px);
-    }
-
-    .btn-copy {
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text-muted);
-      border: 1px solid var(--card-border);
-      padding: 0.38rem 0.7rem;
-      border-radius: 6px;
-      font-size: 0.76rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      font-family: inherit;
-    }
-
-    .btn-copy:hover {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    .sandbox-panels {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 1px;
-      background: rgba(255, 255, 255, 0.06);
-    }
-
-    @media (max-width: 950px) {
-      .sandbox-panels {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .sandbox-panel {
-      background: var(--code-bg);
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .panel-header {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      margin-bottom: 0.6rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .panel-badge {
-      font-size: 0.68rem;
-      padding: 0.15rem 0.45rem;
-      border-radius: 4px;
-      font-weight: 600;
-    }
-
-    .code-editor-area {
-      width: 100%;
-      height: 220px;
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 6px;
-      padding: 0.75rem;
-      font-family: 'Fira Code', monospace;
-      font-size: 0.75rem;
-      color: #e2e8f0;
-      line-height: 1.45;
-      resize: vertical;
-      outline: none;
-      white-space: pre;
-    }
-
-    .code-editor-area:focus {
-      border-color: var(--accent);
-    }
-
-    .code-output-area {
-      width: 100%;
-      height: 220px;
-      background: rgba(0, 0, 0, 0.6);
-      border: 1px solid rgba(52, 211, 153, 0.3);
-      border-radius: 6px;
-      padding: 0.75rem;
-      font-family: 'Fira Code', monospace;
-      font-size: 0.75rem;
-      color: #a7f3d0;
-      line-height: 1.45;
-      overflow: auto;
-      white-space: pre;
-    }
 
     /* Repo Cards Grid */
     .section-title {
@@ -605,16 +183,29 @@
 
     .repo-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-      gap: 1.75rem;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
       margin-bottom: 3.5rem;
+    }
+
+    @media (max-width: 1280px) {
+      .repo-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .repo-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     .repo-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 16px;
-      padding: 1.75rem;
+      padding: 1.35rem 1.2rem;
       display: flex;
       flex-direction: column;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -637,34 +228,37 @@
     .card-top {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 1rem;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.85rem;
+      flex-wrap: wrap;
     }
 
     .repo-name {
-      font-size: 1.25rem;
+      font-size: 1.08rem;
       font-weight: 700;
       color: #fff;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.4rem;
     }
 
     .role-tag {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 0.25rem 0.6rem;
+      letter-spacing: 0.04em;
+      padding: 0.2rem 0.5rem;
       border-radius: 6px;
       border: 1px solid;
+      white-space: nowrap;
     }
 
     .card-desc {
       color: var(--text-muted);
-      font-size: 0.9rem;
-      line-height: 1.6;
-      margin-bottom: 1rem;
+      font-size: 0.83rem;
+      line-height: 1.55;
+      margin-bottom: 0.85rem;
       flex: 1;
     }
 
@@ -672,9 +266,10 @@
       background: var(--code-bg);
       border: 1px solid rgba(255, 255, 255, 0.06);
       border-radius: 8px;
-      padding: 0.75rem 1rem;
-      margin-bottom: 1.25rem;
-      font-size: 0.8rem;
+      padding: 0.65rem 0.85rem;
+      margin-bottom: 0.85rem;
+      font-size: 0.76rem;
+      line-height: 1.45;
     }
 
     .mental-model-box strong {
@@ -685,25 +280,26 @@
       background: var(--code-bg);
       border: 1px solid var(--card-border);
       border-radius: 8px;
-      padding: 0.85rem;
+      padding: 0.75rem;
       font-family: 'Fira Code', monospace;
-      font-size: 0.77rem;
+      font-size: 0.72rem;
       color: #e2e8f0;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1rem;
       overflow-x: auto;
+      line-height: 1.4;
     }
 
     .card-buttons {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.4rem;
       flex-wrap: wrap;
       margin-top: auto;
     }
 
     .btn-link {
-      padding: 0.45rem 0.9rem;
+      padding: 0.4rem 0.75rem;
       border-radius: 8px;
-      font-size: 0.8rem;
+      font-size: 0.76rem;
       font-weight: 600;
       text-decoration: none;
       display: inline-flex;
@@ -734,89 +330,9 @@
       box-shadow: 0 0 10px var(--accent-glow);
     }
 
-    /* Comparison Matrix Table */
-    .matrix-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 1.75rem;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      overflow-x: auto;
-      margin-bottom: 3.5rem;
-    }
-
-    .matrix-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.88rem;
-      text-align: left;
-    }
-
-    .matrix-table th {
-      background: rgba(255, 255, 255, 0.04);
-      color: #ffffff;
-      padding: 0.85rem 1rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      font-weight: 700;
-      font-size: 0.82rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .matrix-table td {
-      padding: 0.95rem 1rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      color: #cbd5e1;
-    }
-
-    .matrix-table tr:last-child td {
-      border-bottom: none;
-    }
-
-    .matrix-table tr:hover td {
-      background: rgba(255, 255, 255, 0.02);
-    }
-
-    .matrix-repo-name {
-      font-weight: 700;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .matrix-type-tag {
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      display: inline-block;
-    }
-
-    .toast-notice {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: #0ea5e9;
-      color: #fff;
-      padding: 0.7rem 1.2rem;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-      z-index: 9999;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: all 0.25s ease;
-      pointer-events: none;
-    }
-
-    .toast-notice.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
   </style>
 </head>
+
 <body>
 
   <!-- Unified Story Global Nav -->
@@ -828,7 +344,8 @@
       </div>
       <div class="story-nav-links">
         <a href="index.html" class="story-nav-link">🚀 Workbench</a>
-        <a href="4-table.html" class="story-nav-link">📊 Table UI</a>
+        <a href="1-transform.html" class="story-nav-link">🔮 1. Transform</a>
+        <a href="2-table.html" class="story-nav-link">📊 2. Table UI</a>
         <a href="repos.html" class="story-nav-link active">🌐 Repos &amp; Architecture</a>
       </div>
     </div>
@@ -837,203 +354,15 @@
   <div class="container">
     <header>
       <div class="badge-pill">
-        <span>🌐</span> Modular Architecture &amp; Repository Directory
+        <span>🌐</span> Ecosystem Architecture &amp; Repository Directory
       </div>
       <h1>Ecosystem Repositories</h1>
       <p class="subtitle">
-        KeshavSoft provides two powerful transformation strategies: the <strong>Unified 3-in-1 Engine</strong> (<code>node-json-transformer</code>) for single-pass conversion, or the <strong>Modular Micro-Engine Pipeline</strong> (<code>select</code> ➔ <code>rename</code> ➔ <code>map</code>) for granular multi-stage workflows.
+        Explore the KeshavSoft JSON ecosystem: powered by <strong><code>node-json-transformer</code></strong> for
+        unified single-pass schema transformations and <strong><code>json-to-tag-table</code></strong> for interactive
+        hierarchical web table presentation.
       </p>
     </header>
-
-    <!-- ARCHITECTURAL CHOICE: UNIFIED VS MODULAR PIPELINE -->
-    <section class="arch-banner">
-      <div class="arch-banner-header">
-        <div class="arch-title-wrap">
-          <div class="arch-title-icon">🏛️</div>
-          <div class="arch-title-text">
-            <h2>Two Complementary Architectural Paradigms</h2>
-            <p>Pick the best paradigm based on your pipeline complexity, observability, and performance requirements.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="arch-comparison-grid">
-        <!-- Paradigm 1: Unified All-in-One Engine -->
-        <div class="arch-box featured">
-          <span class="arch-box-badge" style="background: rgba(56, 189, 248, 0.15); color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.3);">
-            ★ Recommended Unified Approach
-          </span>
-          <h3 class="arch-box-title">1. The Unified All-in-One Engine</h3>
-          <p class="arch-box-desc">
-            Use <strong><code>node-json-transformer</code></strong> to accomplish <strong>Field Selection</strong>, <strong>Key Renaming</strong>, and <strong>Schema Contract Reshaping</strong> simultaneously in a single declarative pass.
-          </p>
-          <div class="arch-flow-diagram">
-            <span class="step-tag">Raw Data</span>
-            <span class="step-arrow">➔</span>
-            <span class="step-tag" style="color: #38bdf8; font-weight: 700;">[ node-json-transformer (Transform) ]</span>
-            <span class="step-arrow">➔</span>
-            <span class="step-tag" style="color: #34d399;">Clean Schema</span>
-            <span class="step-arrow">➔</span>
-            <span class="step-tag" style="color: #fbbf24;">[ json-to-tag-table ]</span>
-          </div>
-          <ul class="arch-box-features">
-            <li><span class="icon">✔</span> <strong>Single Dependency &amp; Pass:</strong> Eliminates intermediary object allocations.</li>
-            <li><span class="icon">✔</span> <strong>Automatic Pruning:</strong> Unreferenced source keys are dropped automatically.</li>
-            <li><span class="icon">✔</span> <strong>Direct Renaming:</strong> Output template keys define the new naming schema.</li>
-            <li><span class="icon">✔</span> <strong>Complex Collections:</strong> Handles XML dot-notated tags and nested sub-arrays cleanly.</li>
-          </ul>
-        </div>
-
-        <!-- Paradigm 2: Modular 3-Step Micro-Engine Pipeline -->
-        <div class="arch-box">
-          <span class="arch-box-badge" style="background: rgba(129, 140, 248, 0.15); color: var(--accent-purple); border: 1px solid rgba(129, 140, 248, 0.3);">
-            Modular Micro-Engines
-          </span>
-          <h3 class="arch-box-title">2. Modular 3-Stage Pipeline</h3>
-          <p class="arch-box-desc">
-            Assemble dedicated, zero-dependency micro-tools (<code>select-json-by-json</code>, <code>rename-json-keys</code>, <code>map-json-by-json</code>) when you need step-by-step auditing or separate stage microservices.
-          </p>
-          <div class="arch-flow-diagram">
-            <span class="step-tag">Raw Data</span>
-            <span class="step-arrow">➔</span>
-            <span class="step-tag">1. Select</span>
-            <span class="step-arrow">➔</span>
-            <span class="step-tag">2. Rename</span>
-            <span class="step-arrow">➔</span>
-            <span class="step-tag">3. Map</span>
-            <span class="step-arrow">➔</span>
-            <span class="step-tag" style="color: #fbbf24;">4. Table UI</span>
-          </div>
-          <ul class="arch-box-features">
-            <li><span class="icon">✔</span> <strong>Zero Dependencies:</strong> Each micro-tool has 0 dependencies and tiny bundle size.</li>
-            <li><span class="icon">✔</span> <strong>Single Responsibility:</strong> Each engine only does one job exceptionally well.</li>
-            <li><span class="icon">✔</span> <strong>Step-by-Step Observability:</strong> Inspect output between projection and normalization.</li>
-            <li><span class="icon">✔</span> <strong>Composable:</strong> Swap or omit individual steps in distributed microservices.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- SPOTLIGHT: node-json-transformer (Unified Engine) -->
-    <section class="spotlight-card" id="node-json-transformer">
-      <div class="spotlight-glow"></div>
-      
-      <div class="spotlight-header">
-        <div class="spotlight-title-group">
-          <div class="spotlight-icon">🔮</div>
-          <div>
-            <div class="spotlight-title">
-              node-json-transformer
-              <span class="spotlight-badge">★ Unified 3-in-1 Engine</span>
-            </div>
-            <div style="font-size: 0.84rem; color: var(--accent); margin-top: 0.2rem;">
-              Published on npm as <code>node-json-transformer</code> &bull; <code>json-traversal</code>
-            </div>
-          </div>
-        </div>
-        <div class="card-buttons">
-          <a href="https://github.com/keshavsoft/node-json-transformer" target="_blank" class="btn-link btn-github" style="background: rgba(255,255,255,0.12);">
-            <span>📂</span> GitHub Repository
-          </a>
-          <button class="btn-link btn-docs" onclick="copyNpmInstall()">
-            <span>📋</span> <code>npm i node-json-transformer</code>
-          </button>
-        </div>
-      </div>
-
-      <p class="spotlight-desc">
-        A high-performance JSON-to-JSON transformation engine where the <strong>source JSON contains the data</strong> and the <strong>transformation JSON describes the output recipe</strong>. In a single declarative specification, it replaces the need for 3 separate stages by performing selection, key renaming, and hierarchy contract mapping in one sub-millisecond execution.
-      </p>
-
-      <!-- 3 Tasks in 1 Card -->
-      <div class="spotlight-tasks-grid">
-        <div class="task-pill-card">
-          <div class="task-pill-head" style="color: var(--accent);">
-            <span>⚡ Task 1: Field Selection</span>
-          </div>
-          <p class="task-pill-desc">
-            Only fields declared in the output recipe are kept. Bulky internal keys, audit fields, or raw XML noise are automatically discarded without needing a prior projection step.
-          </p>
-        </div>
-
-        <div class="task-pill-card">
-          <div class="task-pill-head" style="color: var(--accent-green);">
-            <span>🏷️ Task 2: Key Renaming</span>
-          </div>
-          <p class="task-pill-desc">
-            Output keys in your template (e.g. <code>customer_name</code>, <code>transaction_date</code>) dictate the new property names, instantly normalizing legacy uppercase or dot-notated source keys.
-          </p>
-        </div>
-
-        <div class="task-pill-card">
-          <div class="task-pill-head" style="color: var(--accent-purple);">
-            <span>🗺️ Task 3: Contract Mapping</span>
-          </div>
-          <p class="task-pill-desc">
-            Defines the exact shape of your downstream API contract: nested objects via <code>item: { ... }</code>, collection mapping via <code>[ { list: "...", item: { ... } } ]</code>, and path extraction.
-          </p>
-        </div>
-      </div>
-
-      <!-- Live Interactive Sandbox -->
-      <div class="sandbox-container">
-        <div class="sandbox-topbar">
-          <div class="sandbox-tabs">
-            <button class="sandbox-tab active" id="tabSimple" onclick="loadSandboxPreset('simple')">Interactive Demo (Image 2 Match)</button>
-            <button class="sandbox-tab" id="tabNested" onclick="loadSandboxPreset('nested')">Nested Invoices &amp; Items</button>
-          </div>
-          <div class="sandbox-actions">
-            <button class="btn-run-transform" onclick="executeSandboxTransform()">
-              <span>▶</span> Run Live Transformation
-            </button>
-            <button class="btn-copy" onclick="copySandboxCode()">
-              <span>📋</span> Copy Code
-            </button>
-          </div>
-        </div>
-
-        <div class="sandbox-panels">
-          <!-- Input Data Panel -->
-          <div class="sandbox-panel">
-            <div class="panel-header">
-              <span>1. Raw Source Data</span>
-              <span class="panel-badge" style="background: rgba(56, 189, 248, 0.15); color: var(--accent);">Input JSON</span>
-            </div>
-            <textarea id="sandboxSource" class="code-editor-area" spellcheck="false"></textarea>
-          </div>
-
-          <!-- Template Panel -->
-          <div class="sandbox-panel">
-            <div class="panel-header">
-              <span>2. Transformation Recipe</span>
-              <span class="panel-badge" style="background: rgba(129, 140, 248, 0.15); color: var(--accent-purple);">Template JSON</span>
-            </div>
-            <textarea id="sandboxTemplate" class="code-editor-area" spellcheck="false"></textarea>
-          </div>
-
-          <!-- Output Panel -->
-          <div class="sandbox-panel">
-            <div class="panel-header">
-              <span>3. Transformed Result</span>
-              <span class="panel-badge" style="background: rgba(52, 211, 153, 0.15); color: var(--accent-green);">Output JSON</span>
-            </div>
-            <div id="sandboxOutput" class="code-output-area"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Mental Model & Implementation Snippet -->
-      <div class="mental-model-box" style="margin-bottom: 0;">
-        <strong>The Mental Model:</strong> <code>LEFT / SOURCE DATA  ────▶  RIGHT / OUTPUT RECIPE</code>.<br>
-        Keys on the transformation side become keys in the output. String values on the transformation side are instructions for finding values in the source. Unmentioned source fields are automatically pruned.
-      </div>
-    </section>
-
-    <!-- FULL REPOSITORY DIRECTORY -->
-    <h2 class="section-title">Ecosystem Repository Directory</h2>
-    <p class="section-desc">
-      Explore all engines and libraries in the KeshavSoft JSON ecosystem, each built for speed, predictability, and clean data pipelines.
-    </p>
 
     <div class="repo-grid">
 
@@ -1043,13 +372,18 @@
           <div class="repo-name">
             <span>🔮</span> node-json-transformer
           </div>
-          <span class="role-tag" style="background: rgba(56, 189, 248, 0.15); color: var(--accent); border-color: rgba(56, 189, 248, 0.3);">Step 2: Transform</span>
+          <span class="role-tag"
+            style="background: rgba(129, 140, 248, 0.15); color: #c084fc; border-color: rgba(129, 140, 248, 0.3);">Unified
+            Engine</span>
         </div>
         <p class="card-desc">
-          Unified declarative transformation engine. Combines field selection, property renaming, and contract schema mapping in a single pass. Designed especially for JSON derived from XML/Tally structures with dot-notated keys.
+          Unified declarative transformation engine. Combines field selection, property renaming, and contract schema
+          mapping in a single pass. Designed especially for JSON derived from XML/Tally structures with dot-notated
+          keys.
         </p>
         <div class="mental-model-box">
-          <strong>Mental Model:</strong> Source JSON contains data, Transformation JSON describes output. Selected, renamed, and reshaped simultaneously.
+          <strong>Mental Model:</strong> Source JSON contains data, Transformation JSON describes output. Selected,
+          renamed, and reshaped simultaneously.
         </div>
         <div class="code-preview">const { transform } = require("node-json-transformer");
 
@@ -1063,121 +397,29 @@ const result = transform(data, {
           <a href="https://github.com/keshavsoft/node-json-transformer" target="_blank" class="btn-link btn-github">
             <span>📂</span> GitHub Repo
           </a>
-          <a href="#node-json-transformer" class="btn-link btn-docs">
-            <span>⚡</span> Live Sandbox
+          <a href="1-transform.html" class="btn-link btn-docs">
+            <span>🔮</span> Playground &amp; Docs
           </a>
         </div>
       </div>
 
-      <!-- 2. select-json-by-json -->
-      <div class="repo-card">
-        <div class="card-top">
-          <div class="repo-name">
-            <span>⚡</span> select-json-by-json
-          </div>
-          <span class="role-tag" style="background: rgba(56, 189, 248, 0.15); color: var(--accent); border-color: rgba(56, 189, 248, 0.3);">Step 1: Projection</span>
-        </div>
-        <p class="card-desc">
-          High-performance, zero-dependency JSON projection engine. Traverses bulky nested structures and arrays, pruning away every field not explicitly specified in a declarative projection specification object (<code>true = keep</code>).
-        </p>
-        <div class="mental-model-box">
-          <strong>Mental Model:</strong> Input data is the source of truth. The engine mirrors the original data shape, retaining only requested properties without mutating the source tree.
-        </div>
-        <div class="code-preview">selectJson(rawData, {
-  INVOICE_NUMBER: true,
-  DATE: true,
-  ALL_INVENTORY_ENTRIES_LIST: {
-    ITEM_NAME: true,
-    TOTAL_AMOUNT: true
-  }
-});</div>
-        <div class="card-buttons">
-          <a href="https://github.com/keshavsoft/select-json-by-json" target="_blank" class="btn-link btn-github">
-            <span>📂</span> GitHub Repo
-          </a>
-          <a href="1-select.html" class="btn-link btn-docs">
-            <span>⚡</span> Playground &amp; Docs
-          </a>
-        </div>
-      </div>
-
-      <!-- 3. rename-json-keys -->
-      <div class="repo-card">
-        <div class="card-top">
-          <div class="repo-name">
-            <span>🏷️</span> rename-json-keys
-          </div>
-          <span class="role-tag" style="background: rgba(52, 211, 153, 0.15); color: var(--accent-green); border-color: rgba(52, 211, 153, 0.3);">Step 2: Normalization</span>
-        </div>
-        <p class="card-desc">
-          Recursively normalizes property names across deeply nested objects and array collections. Converts uppercase, legacy, or dot-notated XML keys into clean, developer-friendly camelCase property names.
-        </p>
-        <div class="mental-model-box">
-          <strong>Mental Model:</strong> Input data remains the source of truth for values and hierarchy. The mapping dictionary provides substitution rules with support for scoped <code>$as</code> mappings.
-        </div>
-        <div class="code-preview">renameJsonKeys(projectedData, {
-  INVOICE_NUMBER: "invoiceNo",
-  DATE: "date",
-  ALL_INVENTORY_ENTRIES_LIST: "items",
-  ITEM_NAME: "name",
-  TOTAL_AMOUNT: "amount"
-});</div>
-        <div class="card-buttons">
-          <a href="https://github.com/keshavsoft/rename-json-keys" target="_blank" class="btn-link btn-github">
-            <span>📂</span> GitHub Repo
-          </a>
-          <a href="2-rename.html" class="btn-link btn-docs">
-            <span>🏷️</span> Playground &amp; Docs
-          </a>
-        </div>
-      </div>
-
-      <!-- 4. map-json-by-json -->
-      <div class="repo-card">
-        <div class="card-top">
-          <div class="repo-name">
-            <span>🗺️</span> map-json-by-json
-          </div>
-          <span class="role-tag" style="background: rgba(129, 140, 248, 0.15); color: var(--accent-purple); border-color: rgba(129, 140, 248, 0.3);">Step 3: Contract Mapping</span>
-        </div>
-        <p class="card-desc">
-          Template-driven declarative JSON transformation engine. Defines the exact target schema required by downstream consumers, pulling source values via dot-notation, static values, and child array mapping.
-        </p>
-        <div class="mental-model-box">
-          <strong>Mental Model:</strong> Target template is the source of truth. The engine instantiates the contract template and populates it using <code>$from</code> array extractors and dot paths.
-        </div>
-        <div class="code-preview">mapJson({
-  invoice: "INVOICE_NUMBER",
-  date: "TRANSACTION_DATE",
-  lineItems: {
-    $from: "ALL_INVENTORY_ENTRIES_LIST",
-    product: "ITEM_NAME",
-    total: "TOTAL_AMOUNT"
-  }
-}, rawData);</div>
-        <div class="card-buttons">
-          <a href="https://github.com/keshavsoft/map-json-by-json" target="_blank" class="btn-link btn-github">
-            <span>📂</span> GitHub Repo
-          </a>
-          <a href="3-map.html" class="btn-link btn-docs">
-            <span>🗺️</span> Playground &amp; Docs
-          </a>
-        </div>
-      </div>
-
-      <!-- 5. json-to-tag-table -->
+      <!-- 2. json-to-tag-table -->
       <div class="repo-card">
         <div class="card-top">
           <div class="repo-name">
             <span>📊</span> json-to-tag-table
           </div>
-          <span class="role-tag" style="background: rgba(251, 191, 36, 0.15); color: var(--accent-amber); border-color: rgba(251, 191, 36, 0.3);">Step 4: Table UI</span>
+          <span class="role-tag"
+            style="background: rgba(251, 191, 36, 0.15); color: var(--accent-amber); border-color: rgba(251, 191, 36, 0.3);">Table
+            UI Engine</span>
         </div>
         <p class="card-desc">
-          Visual web table generator built for hierarchical and nested datasets. Inspects scalar columns and automatically converts deep sub-arrays (e.g. inventory allocations) into interactive drilldown triggers.
+          Visual web table generator built for hierarchical and nested datasets. Inspects scalar columns and
+          automatically converts deep sub-arrays (e.g. inventory allocations) into interactive drilldown triggers.
         </p>
         <div class="mental-model-box">
-          <strong>Mental Model:</strong> Structured table representation. Transforms flat or deep records into responsive HTML tables with modal drilldowns and custom skinning support.
+          <strong>Mental Model:</strong> Structured table representation. Transforms flat or deep records into
+          responsive HTML tables with modal drilldowns and custom skinning support.
         </div>
         <div class="code-preview">const table = new Table({
   theme: "default",
@@ -1191,25 +433,29 @@ table.methods.render({
           <a href="https://github.com/keshavsoft/json-to-tag-table" target="_blank" class="btn-link btn-github">
             <span>📂</span> GitHub Repo
           </a>
-          <a href="4-table.html" class="btn-link btn-docs">
+          <a href="2-table.html" class="btn-link btn-docs">
             <span>📊</span> Table Playground
           </a>
         </div>
       </div>
 
-      <!-- 6. json-to-tag -->
+      <!-- 3. json-to-tag -->
       <div class="repo-card">
         <div class="card-top">
           <div class="repo-name">
             <span>🧩</span> json-to-tag
           </div>
-          <span class="role-tag" style="background: rgba(56, 189, 248, 0.15); color: var(--accent); border-color: rgba(56, 189, 248, 0.3);">Compiler Engine</span>
+          <span class="role-tag"
+            style="background: rgba(56, 189, 248, 0.15); color: var(--accent); border-color: rgba(56, 189, 248, 0.3);">Compiler
+            Engine</span>
         </div>
         <p class="card-desc">
-          Zero-dependency JSON-to-DOM compiler and specification validator. Compiles serializable JSON schema specs into live native HTML DOM elements based on a strict catalog schema (<code>tags.json</code>).
+          Zero-dependency JSON-to-DOM compiler and specification validator. Compiles serializable JSON schema specs into
+          live native HTML DOM elements based on a strict catalog schema (<code>tags.json</code>).
         </p>
         <div class="mental-model-box">
-          <strong>Mental Model:</strong> Strict catalog enforcement. Ensures attribute safety, permitted nesting rules, and valid tag hierarchies before rendering into the DOM.
+          <strong>Mental Model:</strong> Strict catalog enforcement. Ensures attribute safety, permitted nesting rules,
+          and valid tag hierarchies before rendering into the DOM.
         </div>
         <div class="code-preview">jsonToTag({
   tag: "div",
@@ -1228,24 +474,27 @@ table.methods.render({
         </div>
       </div>
 
-      <!-- 7. json-transform-recipes -->
+      <!-- 4. json-transform-recipes -->
       <div class="repo-card">
         <div class="card-top">
           <div class="repo-name">
             <span>🚀</span> json-transform-recipes
           </div>
-          <span class="role-tag" style="background: rgba(52, 211, 153, 0.15); color: var(--accent-green); border-color: rgba(52, 211, 153, 0.3);">Showcase &amp; Hub</span>
+          <span class="role-tag"
+            style="background: rgba(52, 211, 153, 0.15); color: var(--accent-green); border-color: rgba(52, 211, 153, 0.3);">Showcase
+            &amp; Hub</span>
         </div>
         <p class="card-desc">
-          The central cookbook, recipe catalog, and interactive browser-first workbench. Demonstrates end-to-end execution linking field selection, key renaming, template contract mapping, and UI table rendering.
+          The central cookbook, recipe catalog, and interactive browser-first workbench. Demonstrates end-to-end
+          execution linking field selection, key renaming, template contract mapping, and UI table rendering.
         </p>
         <div class="mental-model-box">
-          <strong>Mental Model:</strong> End-to-end orchestration. Uses official CDN bundles to provide a 100% client-side pipeline workbench with live latency tracking and multi-format datasets.
+          <strong>Mental Model:</strong> End-to-end orchestration. Uses official CDN bundles to provide a 100%
+          client-side pipeline workbench with live latency tracking and multi-format datasets.
         </div>
         <div class="code-preview">// Full pipeline orchestration
-const step1 = selectJson(rawData, spec);
-const step2 = renameJsonKeys(step1, dictionary);
-renderTable(step2);</div>
+const transformed = transform(rawData, recipe);
+renderTable(transformed);</div>
         <div class="card-buttons">
           <a href="https://github.com/keshavsoft/json-transform-recipes" target="_blank" class="btn-link btn-github">
             <span>📂</span> GitHub Repo
@@ -1258,299 +507,12 @@ renderTable(step2);</div>
 
     </div>
 
-    <!-- COMPARISON MATRIX TABLE -->
-    <h2 class="section-title">Ecosystem Comparison Matrix</h2>
-    <p class="section-desc">Quick reference comparing scope, roles, mental models, and repository targets.</p>
-
-    <div class="matrix-card">
-      <table class="matrix-table">
-        <thead>
-          <tr>
-            <th>Repository</th>
-            <th>Type</th>
-            <th>Core Responsibility</th>
-            <th>Mental Model</th>
-            <th>GitHub Target</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <div class="matrix-repo-name">
-                <span>🔮</span> node-json-transformer
-              </div>
-            </td>
-            <td>
-              <span class="matrix-type-tag" style="background: rgba(56, 189, 248, 0.15); color: var(--accent);">Unified Engine</span>
-            </td>
-            <td>Combines Selection, Key Renaming &amp; Schema Mapping in 1 pass</td>
-            <td>Source JSON contains data &bull; Transformation JSON describes output</td>
-            <td><a href="https://github.com/keshavsoft/node-json-transformer" target="_blank" style="color: var(--accent); text-decoration: none;">keshavsoft/node-json-transformer</a></td>
-          </tr>
-          <tr>
-            <td>
-              <div class="matrix-repo-name">
-                <span>⚡</span> select-json-by-json
-              </div>
-            </td>
-            <td>
-              <span class="matrix-type-tag" style="background: rgba(56, 189, 248, 0.15); color: var(--accent);">Micro-Engine</span>
-            </td>
-            <td>Recursive property pruning (Step 1: Projection)</td>
-            <td>Input data is truth &bull; Prune unrequested keys</td>
-            <td><a href="https://github.com/keshavsoft/select-json-by-json" target="_blank" style="color: var(--accent); text-decoration: none;">keshavsoft/select-json-by-json</a></td>
-          </tr>
-          <tr>
-            <td>
-              <div class="matrix-repo-name">
-                <span>🏷️</span> rename-json-keys
-              </div>
-            </td>
-            <td>
-              <span class="matrix-type-tag" style="background: rgba(52, 211, 153, 0.15); color: var(--accent-green);">Micro-Engine</span>
-            </td>
-            <td>Recursive key dictionary substitution (Step 2: Normalization)</td>
-            <td>Input data is truth &bull; Dictionary renames keys</td>
-            <td><a href="https://github.com/keshavsoft/rename-json-keys" target="_blank" style="color: var(--accent); text-decoration: none;">keshavsoft/rename-json-keys</a></td>
-          </tr>
-          <tr>
-            <td>
-              <div class="matrix-repo-name">
-                <span>🗺️</span> map-json-by-json
-              </div>
-            </td>
-            <td>
-              <span class="matrix-type-tag" style="background: rgba(129, 140, 248, 0.15); color: var(--accent-purple);">Micro-Engine</span>
-            </td>
-            <td>Template-driven contract reshaping (Step 3: Contract Mapping)</td>
-            <td>Target template is truth &bull; Path extraction</td>
-            <td><a href="https://github.com/keshavsoft/map-json-by-json" target="_blank" style="color: var(--accent); text-decoration: none;">keshavsoft/map-json-by-json</a></td>
-          </tr>
-          <tr>
-            <td>
-              <div class="matrix-repo-name">
-                <span>📊</span> json-to-tag-table
-              </div>
-            </td>
-            <td>
-              <span class="matrix-type-tag" style="background: rgba(251, 191, 36, 0.15); color: var(--accent-amber);">Presentation</span>
-            </td>
-            <td>Hierarchical DOM table generation with interactive drilldowns</td>
-            <td>Deep records converted into HTML tables with modal drilldowns</td>
-            <td><a href="https://github.com/keshavsoft/json-to-tag-table" target="_blank" style="color: var(--accent); text-decoration: none;">keshavsoft/json-to-tag-table</a></td>
-          </tr>
-          <tr>
-            <td>
-              <div class="matrix-repo-name">
-                <span>🧩</span> json-to-tag
-              </div>
-            </td>
-            <td>
-              <span class="matrix-type-tag" style="background: rgba(56, 189, 248, 0.15); color: var(--accent);">Compiler</span>
-            </td>
-            <td>Declarative DOM compiler based on tags.json schema</td>
-            <td>Strict HTML catalog validation &amp; element generation</td>
-            <td><a href="https://github.com/keshavsoft/json-to-tag" target="_blank" style="color: var(--accent); text-decoration: none;">keshavsoft/json-to-tag</a></td>
-          </tr>
-          <tr>
-            <td>
-              <div class="matrix-repo-name">
-                <span>🚀</span> json-transform-recipes
-              </div>
-            </td>
-            <td>
-              <span class="matrix-type-tag" style="background: rgba(52, 211, 153, 0.15); color: var(--accent-green);">Showcase Hub</span>
-            </td>
-            <td>Central cookbook, documentation, and live browser workbench</td>
-            <td>End-to-end pipeline demonstration in the browser</td>
-            <td><a href="https://github.com/keshavsoft/json-transform-recipes" target="_blank" style="color: var(--accent); text-decoration: none;">keshavsoft/json-transform-recipes</a></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
   </div>
 
-  <div id="toastNotice" class="toast-notice">Copied to clipboard!</div>
-
-  <footer style="border-top: 1px solid var(--card-border); padding: 2rem 1.5rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+  <footer
+    style="border-top: 1px solid var(--card-border); padding: 2rem 1.5rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
     JSON Transformation Recipes &bull; Released under the MIT License &bull; &copy; KeshavSoft
   </footer>
-
-  <script>
-    // Presets for the Live node-json-transformer Sandbox
-    const SANDBOX_PRESETS = {
-      simple: {
-        source: {
-          "Name": "Alpha Global Industries",
-          "Date": "2026-09-24",
-          "INTERNAL_AUDIT_ID": "SEC-99812",
-          "STATUS": "POSTED",
-          "UNWANTED_NOTES": "Do not expose in public API"
-        },
-        template: {
-          "item": {
-            "customer_name": "Name",
-            "transaction_date": "Date"
-          }
-        }
-      },
-      nested: {
-        source: {
-          "INVOICE_NUMBER": 1001,
-          "TRANSACTION_DATE": "2026-09-24",
-          "CUSTOMER_NAME": "Alpha Global Industries",
-          "INTERNAL_AUDIT_LOG": "Cleared by compliance",
-          "ALL_INVENTORY_ENTRIES_LIST": [
-            {
-              "STOCK_ITEM_NAME": "Industrial Power Cable",
-              "BILLED_QTY": "150 Meters",
-              "TOTAL_AMOUNT": 45000,
-              "INTERNAL_SKU": "CAB-440V-HD"
-            },
-            {
-              "STOCK_ITEM_NAME": "Copper Bushing Joint",
-              "BILLED_QTY": "24 Units",
-              "TOTAL_AMOUNT": 12800,
-              "INTERNAL_SKU": "COP-BUSH-24"
-            }
-          ]
-        },
-        template: {
-          "item": {
-            "invoiceNo": "INVOICE_NUMBER",
-            "date": "TRANSACTION_DATE",
-            "client": "CUSTOMER_NAME"
-          },
-          "items": [
-            {
-              "list": "ALL_INVENTORY_ENTRIES_LIST",
-              "item": {
-                "product": "STOCK_ITEM_NAME",
-                "quantity": "BILLED_QTY",
-                "amount": "TOTAL_AMOUNT"
-              }
-            }
-          ]
-        }
-      }
-    };
-
-    // Client-side execution of node-json-transformer specification
-    function transformNodeJson(source, template) {
-      if (!source || !template) return null;
-      if (Array.isArray(source)) {
-        return source.map(item => transformNodeJson(item, template));
-      }
-
-      // Handle item mapping
-      let itemSpec = null;
-      if (template.item && typeof template.item === 'object') {
-        itemSpec = template.item;
-      } else if (template.mapping && template.mapping.item && typeof template.mapping.item === 'object') {
-        itemSpec = template.mapping.item;
-      }
-
-      const result = {};
-
-      if (itemSpec) {
-        for (const [outKey, srcProp] of Object.entries(itemSpec)) {
-          if (typeof srcProp === 'string') {
-            result[outKey] = resolveProperty(source, srcProp);
-          } else if (srcProp && typeof srcProp === 'object') {
-            result[outKey] = transformNodeJson(source, srcProp);
-          }
-        }
-      }
-
-      // Handle collection arrays like { items: [ { list: "KEY", item: { ... } } ] }
-      for (const [outKey, val] of Object.entries(template)) {
-        if (outKey === 'item' || outKey === 'mapping') continue;
-        if (Array.isArray(val) && val.length > 0 && val[0].list && val[0].item) {
-          const listRule = val[0];
-          const rawList = resolveProperty(source, listRule.list);
-          if (Array.isArray(rawList)) {
-            result[outKey] = rawList.map(entry => transformNodeJson(entry, { item: listRule.item }));
-          } else if (rawList && typeof rawList === 'object') {
-            result[outKey] = [transformNodeJson(rawList, { item: listRule.item })];
-          } else {
-            result[outKey] = [];
-          }
-        }
-      }
-
-      return result;
-    }
-
-    function resolveProperty(obj, path) {
-      if (!obj || typeof obj !== 'object') return undefined;
-      if (path in obj) return obj[path];
-      const parts = path.split('.');
-      let curr = obj;
-      for (const part of parts) {
-        if (curr == null) return undefined;
-        curr = curr[part];
-      }
-      return curr;
-    }
-
-    function loadSandboxPreset(key) {
-      const preset = SANDBOX_PRESETS[key] || SANDBOX_PRESETS.simple;
-      document.getElementById('sandboxSource').value = JSON.stringify(preset.source, null, 2);
-      document.getElementById('sandboxTemplate').value = JSON.stringify(preset.template, null, 2);
-
-      document.querySelectorAll('.sandbox-tab').forEach(t => t.classList.remove('active'));
-      if (key === 'simple') document.getElementById('tabSimple').classList.add('active');
-      if (key === 'nested') document.getElementById('tabNested').classList.add('active');
-
-      executeSandboxTransform();
-    }
-
-    function executeSandboxTransform() {
-      try {
-        const srcText = document.getElementById('sandboxSource').value;
-        const tmplText = document.getElementById('sandboxTemplate').value;
-
-        const src = JSON.parse(srcText);
-        const tmpl = JSON.parse(tmplText);
-
-        const out = transformNodeJson(src, tmpl);
-        document.getElementById('sandboxOutput').textContent = JSON.stringify(out, null, 2);
-      } catch (err) {
-        document.getElementById('sandboxOutput').textContent = "Transformation Error: " + err.message;
-      }
-    }
-
-    function showToast(msg) {
-      const t = document.getElementById('toastNotice');
-      t.textContent = msg || 'Copied to clipboard!';
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2000);
-    }
-
-    function copyNpmInstall() {
-      navigator.clipboard.writeText('npm install node-json-transformer');
-      showToast('Copied: npm install node-json-transformer');
-    }
-
-    function copySandboxCode() {
-      const code = `const { transform } = require("node-json-transformer");
-
-const data = ${document.getElementById('sandboxSource').value};
-
-const template = ${document.getElementById('sandboxTemplate').value};
-
-const result = transform(data, template);
-console.log(result);`;
-
-      navigator.clipboard.writeText(code);
-      showToast('Copied Node.js code snippet!');
-    }
-
-    // Initialize sandbox on page load
-    window.addEventListener('DOMContentLoaded', () => {
-      loadSandboxPreset('simple');
-    });
-  </script>
 </body>
+
 </html>

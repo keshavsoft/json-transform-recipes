@@ -10,30 +10,38 @@
 
 Enterprise systems, legacy ERPs, SOAP services, and raw XML backends emit bulky, deeply nested datasets with uppercase, verbose property names.
 
-Instead of writing imperative loops or disjointed multi-stage plumbing, this suite provides a streamlined declarative pipeline:
+Instead of writing imperative spaghetti loops to clean, pluck, and reshape data for every view or API endpoint, this suite provides **three declarative micro-engines**:
 
 ```
 [ Raw Enterprise XML / JSON ]
              │
              ▼
-   node-json-transformer     --> Step 2: Unified Transform (Field Selection, Key Renaming & Contract Mapping)
+   select-json-by-json     --> Step 1: Filter fields (1:1 projection)
              │
              ▼
-     json-to-tag-table       --> Step 3: Render interactive drilldown web tables
+    rename-json-keys       --> Step 2: Normalize keys (Data is source of truth)
+             │
+             ▼
+    map-json-by-json       --> Step 3: Reshape into contract (Template is source of truth)
+             │
+             ▼
+    json-to-tag-table      --> Step 4: Render interactive drilldown web tables
 ```
 
 ---
 
 ## Ecosystem Repositories Directory
 
-> For detailed architecture explanations, design rationale, and API breakdowns, see the **[Ecosystem Repositories Guide (REPOSITORIES.md)](REPOSITORIES.md)** and open **`repos.html`**.
+> For detailed architecture explanations, design rationale, and API breakdowns, see the **[Ecosystem Repositories Guide (REPOSITORIES.md)](REPOSITORIES.md)**.
 
 | Package / Repository | Role / Responsibility | Mental Model | Official GitHub Repo | Live Docs & Playground |
 | :--- | :--- | :--- | :--- | :--- |
-| **[`node-json-transformer`](https://github.com/keshavsoft/node-json-transformer)** | **Step 1: Unified Transform** | Declarative Contract Mapping (Select + Rename + Reshape) | [GitHub Repo](https://github.com/keshavsoft/node-json-transformer) | [Live Playground](1-transform.html) |
-| **[`json-to-tag-table`](https://github.com/keshavsoft/json-to-tag-table)** | **Step 2: Table Drilldown UI** | Structured Interactive DOM Table | [GitHub Repo](https://github.com/keshavsoft/json-to-tag-table) | [Table Playground](2-table.html) |
-| **[`json-to-tag`](https://github.com/keshavsoft/json-to-tag)** | **Tag Compiler** | Tag Schema Catalog & Directives | [GitHub Repo](https://github.com/keshavsoft/json-to-tag) | [Catalog & Tools](https://keshavsoft.github.io/json-to-tag/) |
-| **[`json-transform-recipes`](https://github.com/keshavsoft/json-transform-recipes)** | **Full Pipeline Showcase** | End-to-End Orchestration & Demos | [GitHub Repo](https://github.com/keshavsoft/json-transform-recipes) | [Live Workbench](index.html) |
+| **[`select-json-by-json`](https://github.com/keshavsoft/select-json-by-json)** | **1. Field Projection** | Input Data is Truth | [GitHub Repo](https://github.com/keshavsoft/select-json-by-json) | [Live Playground](https://keshavsoft.github.io/select-json-by-json/) |
+| **[`rename-json-keys`](https://github.com/keshavsoft/rename-json-keys)** | **2. Key Normalization** | Input Data is Truth | [GitHub Repo](https://github.com/keshavsoft/rename-json-keys) | [Live Playground](https://keshavsoft.github.io/rename-json-keys/) |
+| **[`map-json-by-json`](https://github.com/keshavsoft/map-json-by-json)** | **3. Contract Mapping** | Target Template is Truth | [GitHub Repo](https://github.com/keshavsoft/map-json-by-json) | [Live Playground](https://keshavsoft.github.io/map-json-by-json/) |
+| **[`json-to-tag-table`](https://github.com/keshavsoft/json-to-tag-table)** | **4. Table Drilldown** | Structured DOM Table | [GitHub Repo](https://github.com/keshavsoft/json-to-tag-table) | [Live Workbench](https://keshavsoft.github.io/json-transform-recipes/) |
+| **[`json-to-tag`](https://github.com/keshavsoft/json-to-tag)** | **5. Declarative Compiler** | Tag Schema Catalog | [GitHub Repo](https://github.com/keshavsoft/json-to-tag) | [Catalog & Tools](https://keshavsoft.github.io/json-to-tag/) |
+| **[`json-transform-recipes`](https://github.com/keshavsoft/json-transform-recipes)** | **Full Pipeline Showcase** | End-to-End Orchestration | [GitHub Repo](https://github.com/keshavsoft/json-transform-recipes) | [Live Workbench](https://keshavsoft.github.io/json-transform-recipes/) |
 
 ---
 
