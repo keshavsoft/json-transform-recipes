@@ -497,7 +497,10 @@
       </div>
       <div class="story-nav-links">
         <a href="index.html" class="story-nav-link active">🚀 Workbench</a>
-        <a href="4-table.html" class="story-nav-link">📊 Table UI</a>
+        <a href="1-select.html" class="story-nav-link">⚡ 1. Select</a>
+        <a href="2-rename.html" class="story-nav-link">🏷️ 2. Rename</a>
+        <a href="3-map.html" class="story-nav-link">🗺️ 3. Map</a>
+        <a href="4-table.html" class="story-nav-link">📊 4. Table UI</a>
         <a href="repos.html" class="story-nav-link">🌐 Repos &amp; Architecture</a>
       </div>
     </div>
@@ -519,8 +522,14 @@
         <a href="repos.html" class="repo-link" title="Repository Directory & Architecture Guide" style="border-color: rgba(56, 189, 248, 0.4); background: rgba(56, 189, 248, 0.12); color: var(--accent); font-weight: 700;">
           <span>🌐</span> Repos &amp; Architecture Guide
         </a>
-        <a href="https://github.com/keshavsoft/node-json-transformer" target="_blank" class="repo-link" title="Unified Transformation Engine" style="border-color: rgba(129, 140, 248, 0.4); background: rgba(129, 140, 248, 0.12); color: #c084fc; font-weight: 700;">
-          <span>🔮</span> node-json-transformer
+        <a href="https://keshavsoft.github.io/select-json-by-json/" target="_blank" class="repo-link" title="Interactive Docs & Playground">
+          <span>⚡</span> select-json-by-json Docs
+        </a>
+        <a href="https://keshavsoft.github.io/rename-json-keys/" target="_blank" class="repo-link" title="Interactive Docs & Playground">
+          <span>🏷️</span> rename-json-keys Docs
+        </a>
+        <a href="https://keshavsoft.github.io/map-json-by-json/" target="_blank" class="repo-link" title="Interactive Docs & Playground">
+          <span>🗺️</span> map-json-by-json Docs
         </a>
         <a href="https://github.com/keshavsoft/json-to-tag-table" target="_blank" class="repo-link" title="GitHub Repository">
           <span>📊</span> json-to-tag-table
@@ -535,17 +544,16 @@
     <div class="toolbar">
       <div class="preset-group">
         <span class="preset-label">Data Preset:</span>
-        <button class="preset-btn" id="btnPresetDemo">⭐ Keshav Demo (Image 2)</button>
-        <button class="preset-btn active" id="btnPresetInvoice">Invoices &amp; Inventory</button>
+        <button class="preset-btn active" id="btnPresetInvoice">Invoices & Inventory</button>
         <button class="preset-btn" id="btnPresetOrders">E-Commerce Orders</button>
         <button class="preset-btn" id="btnPresetLogistics">Supply Chain Shipments</button>
       </div>
       <button class="btn-run-all" id="btnRunAll">
-        <span>🚀</span> Run Full Pipeline &amp; Render Table
+        <span>🚀</span> Run Full Pipeline & Render Table
       </button>
     </div>
 
-    <!-- Stepper Navigation Ribbon: 3-Step Pipeline -->
+    <!-- Stepper Navigation Ribbon -->
     <div class="pipeline-ribbon">
       <div class="pipe-step active" data-step="step1">
         <div class="pipe-step-tag">Step 1: Input</div>
@@ -553,12 +561,22 @@
         <div class="pipe-step-desc">XML or nested JSON source</div>
       </div>
       <div class="pipe-step" data-step="step2">
-        <div class="pipe-step-tag" style="color: #c084fc;">Step 2: Transform</div>
-        <div class="pipe-step-title">node-json-transformer</div>
-        <div class="pipe-step-desc">Transform Data to Schema Contract</div>
+        <div class="pipe-step-tag">Step 2: Projection</div>
+        <div class="pipe-step-title">select-json-by-json</div>
+        <div class="pipe-step-desc">Pick only needed fields</div>
       </div>
       <div class="pipe-step" data-step="step3">
-        <div class="pipe-step-tag" style="color: var(--accent-amber);">Step 3: Visual UI</div>
+        <div class="pipe-step-tag">Step 3: Normalization</div>
+        <div class="pipe-step-title">rename-json-keys</div>
+        <div class="pipe-step-desc">Data is source of truth</div>
+      </div>
+      <div class="pipe-step" data-step="step4">
+        <div class="pipe-step-tag">Step 4: Contract</div>
+        <div class="pipe-step-title">map-json-by-json</div>
+        <div class="pipe-step-desc">Target template is truth</div>
+      </div>
+      <div class="pipe-step" data-step="step5">
+        <div class="pipe-step-tag">Step 5: Visual UI</div>
         <div class="pipe-step-title">json-to-tag-table</div>
         <div class="pipe-step-desc">Interactive Drilldown Table</div>
       </div>
@@ -578,50 +596,90 @@
       </div>
     </div>
 
-    <!-- STEP 2: node-json-transformer (Transform) -->
+    <!-- STEP 2: select-json-by-json -->
     <div class="step-card-pane" id="pane-step2" style="display: none;">
       <div class="card">
         <div class="grid-2">
           <div>
             <div class="editor-label">
-              <span>Transformation Recipe (node-json-transformer)</span>
-              <a href="https://github.com/keshavsoft/node-json-transformer" target="_blank" class="tag-badge" style="background: rgba(129, 140, 248, 0.15); color: #c084fc; text-decoration: none; font-weight: 700;">
-                🔮 node-json-transformer Repo
-              </a>
+              <span>Projection Spec (select-json-by-json)</span>
+              <span class="tag-badge" style="background: rgba(56, 189, 248, 0.15); color: var(--accent);">Projection</span>
             </div>
-            <textarea id="txtTransformRecipe" spellcheck="false"></textarea>
-            <div style="margin-top: 0.75rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
-              <span style="font-size: 0.78rem; color: var(--text-muted);">
-                🔮 Transform source JSON to output contract recipe
-              </span>
-              <div style="display: flex; gap: 0.5rem;">
-                <button class="btn-action" id="btnFormatRecipe">✨ Format</button>
-                <button class="btn-action" id="btnRunTransform" style="background: linear-gradient(135deg, #818cf8, #38bdf8); color: #04101e; font-weight: 700;">
-                  🔮 Run Transform
-                </button>
-              </div>
+            <textarea id="txtSelectSpec" spellcheck="false"></textarea>
+            <div style="margin-top: 0.75rem; text-align: right;">
+              <button class="btn-action" id="btnRunSelect" style="background: var(--accent); color: #04101e;">⚡ Run selectJson</button>
             </div>
           </div>
           <div>
             <div class="editor-label">
-              <span>Transformed Output (Contract Result)</span>
-              <button class="btn-action" id="btnCopyTransform">📋 Copy</button>
+              <span>Projected Output</span>
+              <button class="btn-action" id="btnCopySelect">📋 Copy</button>
             </div>
-            <pre id="preTransformOut" style="color: #a5b4fc;"></pre>
+            <pre id="preSelectOut"></pre>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- STEP 3: Interactive Table Rendering (json-to-tag-table) -->
+    <!-- STEP 3: rename-json-keys -->
     <div class="step-card-pane" id="pane-step3" style="display: none;">
+      <div class="card">
+        <div class="grid-2">
+          <div>
+            <div class="editor-label">
+              <span>Key Mapping Dictionary (rename-json-keys)</span>
+              <span class="tag-badge" style="background: rgba(52, 211, 153, 0.15); color: var(--accent-green);">Normalization</span>
+            </div>
+            <textarea id="txtRenameSpec" spellcheck="false"></textarea>
+            <div style="margin-top: 0.75rem; text-align: right;">
+              <button class="btn-action" id="btnRunRename" style="background: var(--accent-green); color: #04101e;">⚡ Run renameJsonKeys</button>
+            </div>
+          </div>
+          <div>
+            <div class="editor-label">
+              <span>Renamed Output</span>
+              <button class="btn-action" id="btnCopyRename">📋 Copy</button>
+            </div>
+            <pre id="preRenameOut" style="color: var(--accent-green);"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: map-json-by-json -->
+    <div class="step-card-pane" id="pane-step4" style="display: none;">
+      <div class="card">
+        <div class="grid-2">
+          <div>
+            <div class="editor-label">
+              <span>Target Template Contract (map-json-by-json)</span>
+              <span class="tag-badge" style="background: rgba(129, 140, 248, 0.15); color: var(--accent-purple);">Template</span>
+            </div>
+            <textarea id="txtMapTemplate" spellcheck="false"></textarea>
+            <div style="margin-top: 0.75rem; text-align: right;">
+              <button class="btn-action" id="btnRunMap" style="background: var(--accent-purple); color: #04101e;">⚡ Run mapJson</button>
+            </div>
+          </div>
+          <div>
+            <div class="editor-label">
+              <span>Reshaped Contract Output</span>
+              <button class="btn-action" id="btnCopyMap">📋 Copy</button>
+            </div>
+            <pre id="preMapOut" style="color: #a5b4fc;"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5: Interactive Table Rendering -->
+    <div class="step-card-pane" id="pane-step5" style="display: none;">
       <div class="card">
         <div class="editor-label">
           <span>Live Interactive Drilldown Table (json-to-tag-table)</span>
           <button class="btn-action" id="btnRenderTable">🔄 Re-Render Table</button>
         </div>
         <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">
-          Rendered directly from the transformed output of <code>node-json-transformer</code>. Click expand buttons to inspect child collections.
+          Click the expand buttons in the table rows below to inspect multi-level child structures (e.g. inventory line items and lot allocations).
         </p>
         <div id="tableContainer"></div>
       </div>
@@ -636,41 +694,27 @@
 
   <!-- CDN Loader & Logic -->
   <script type="module">
-    // Direct CDN table import if available
-    const hasTagTable = typeof globalThis.ks?.jsonToTagTable === "function" || typeof globalThis.ks?.Table === "function";
+    // Direct CDN module imports
+    import { renameJsonKeys } from "https://cdn.jsdelivr.net/gh/keshavsoft/rename-json-keys@main/src/v1/rename.js";
+    import { mapJson } from "https://cdn.jsdelivr.net/gh/keshavsoft/map-json-by-json@main/src/v1/map.js";
 
-    // Presets configured for node-json-transformer
+    // selectJson from CDN bundle (via globalThis.ks.selectJson)
+    const selectJson = (source, spec) => (typeof globalThis.ks?.selectJson === "function" ? globalThis.ks.selectJson(source, spec) : source);
+
+    // Presets
     const presets = {
-      demo: {
-        raw: {
-          "name": "Keshav",
-          "city": "Yamuna Nagar",
-          "dob": "1234"
-        },
-        recipe: {
-          "mapping": {
-            "item": {
-              "customerName": "name",
-              "customerCity": "city"
-            }
-          }
-        }
-      },
       invoice: {
         raw: [
           {
             "INVOICE_NUMBER": 1001,
             "TRANSACTION_DATE": "2026-09-24",
             "CUSTOMER_NAME": "Alpha Global Industries",
-            "INTERNAL_AUDIT_LOG": "Approved by compliance team",
-            "STATUS_FLAG": "ACTIVE",
             "ALL_INVENTORY_ENTRIES_LIST": [
               {
                 "STOCK_ITEM_NAME": "Industrial Power Cable",
                 "BILLED_QTY": "50 mtr",
                 "UNIT_RATE": 120.00,
                 "TOTAL_AMOUNT": 6000.00,
-                "INTERNAL_PART_CODE": "CAB-440V",
                 "BATCH_ALLOCATIONS_LIST": [
                   { "BATCH_ID": "LOT-901", "ALLOCATED_QTY": "50 mtr", "AMOUNT": 6000.00 }
                 ]
@@ -680,7 +724,6 @@
                 "BILLED_QTY": "20 Nos",
                 "UNIT_RATE": 45.50,
                 "TOTAL_AMOUNT": 910.00,
-                "INTERNAL_PART_CODE": "MSH-2026",
                 "BATCH_ALLOCATIONS_LIST": [
                   { "BATCH_ID": "LOT-330", "ALLOCATED_QTY": "20 Nos", "AMOUNT": 910.00 }
                 ]
@@ -688,33 +731,47 @@
             ]
           }
         ],
-        recipe: {
-          "mapping": {
-            "item": {
-              "invoiceNo": "INVOICE_NUMBER",
-              "date": "TRANSACTION_DATE",
-              "customer": "CUSTOMER_NAME"
+        selectSpec: {
+          INVOICE_NUMBER: true,
+          TRANSACTION_DATE: true,
+          CUSTOMER_NAME: true,
+          ALL_INVENTORY_ENTRIES_LIST: {
+            STOCK_ITEM_NAME: true,
+            BILLED_QTY: true,
+            TOTAL_AMOUNT: true,
+            BATCH_ALLOCATIONS_LIST: {
+              BATCH_ID: true,
+              ALLOCATED_QTY: true
             }
-          },
-          "items": [
-            {
-              "list": "ALL_INVENTORY_ENTRIES_LIST",
-              "item": {
-                "itemName": "STOCK_ITEM_NAME",
-                "qty": "BILLED_QTY",
-                "amount": "TOTAL_AMOUNT",
-                "batches": [
-                  {
-                    "list": "BATCH_ALLOCATIONS_LIST",
-                    "item": {
-                      "batchId": "BATCH_ID",
-                      "allocatedQty": "ALLOCATED_QTY"
-                    }
-                  }
-                ]
-              }
+          }
+        },
+        renameMap: {
+          INVOICE_NUMBER: "invoiceNo",
+          TRANSACTION_DATE: "date",
+          CUSTOMER_NAME: "customer",
+          ALL_INVENTORY_ENTRIES_LIST: "items",
+          STOCK_ITEM_NAME: "itemName",
+          BILLED_QTY: "qty",
+          TOTAL_AMOUNT: "amount",
+          BATCH_ALLOCATIONS_LIST: "batches",
+          BATCH_ID: "batchId",
+          ALLOCATED_QTY: "allocatedQty"
+        },
+        mapTemplate: {
+          invoice: "INVOICE_NUMBER",
+          date: "TRANSACTION_DATE",
+          client: "CUSTOMER_NAME",
+          lineItems: {
+            $from: "ALL_INVENTORY_ENTRIES_LIST",
+            product: "STOCK_ITEM_NAME",
+            quantity: "BILLED_QTY",
+            subtotal: "TOTAL_AMOUNT",
+            lots: {
+              $from: "BATCH_ALLOCATIONS_LIST",
+              lotId: "BATCH_ID",
+              allocated: "ALLOCATED_QTY"
             }
-          ]
+          }
         }
       },
       orders: {
@@ -723,41 +780,48 @@
             "ORDER_IDENTIFIER": "ORD-5542",
             "PURCHASE_TIMESTAMP": "2026-09-24T10:15:00Z",
             "ACCOUNT_BUYER": "Sophia Martinez",
-            "PAYMENT_METHOD": "CREDIT_CARD_TOKEN",
             "ORDER_LINES_COLLECTION": [
               {
                 "PRODUCT_SKU": "SKU-HEADPHONES-01",
                 "ORDERED_UNITS": 1,
-                "LINE_PRICE": 249.99,
-                "INTERNAL_MARGIN": 0.42
+                "LINE_PRICE": 249.99
               },
               {
                 "PRODUCT_SKU": "SKU-CASE-PRO",
                 "ORDERED_UNITS": 2,
-                "LINE_PRICE": 29.99,
-                "INTERNAL_MARGIN": 0.65
+                "LINE_PRICE": 29.99
               }
             ]
           }
         ],
-        recipe: {
-          "mapping": {
-            "item": {
-              "orderId": "ORDER_IDENTIFIER",
-              "timestamp": "PURCHASE_TIMESTAMP",
-              "buyer": "ACCOUNT_BUYER"
-            }
-          },
-          "items": [
-            {
-              "list": "ORDER_LINES_COLLECTION",
-              "item": {
-                "sku": "PRODUCT_SKU",
-                "units": "ORDERED_UNITS",
-                "price": "LINE_PRICE"
-              }
-            }
-          ]
+        selectSpec: {
+          ORDER_IDENTIFIER: true,
+          PURCHASE_TIMESTAMP: true,
+          ACCOUNT_BUYER: true,
+          ORDER_LINES_COLLECTION: {
+            PRODUCT_SKU: true,
+            ORDERED_UNITS: true,
+            LINE_PRICE: true
+          }
+        },
+        renameMap: {
+          ORDER_IDENTIFIER: "orderId",
+          PURCHASE_TIMESTAMP: "timestamp",
+          ACCOUNT_BUYER: "buyer",
+          ORDER_LINES_COLLECTION: "lines",
+          PRODUCT_SKU: "sku",
+          ORDERED_UNITS: "units",
+          LINE_PRICE: "price"
+        },
+        mapTemplate: {
+          orderId: "ORDER_IDENTIFIER",
+          customer: "ACCOUNT_BUYER",
+          items: {
+            $from: "ORDER_LINES_COLLECTION",
+            sku: "PRODUCT_SKU",
+            units: "ORDERED_UNITS",
+            total: "LINE_PRICE"
+          }
         }
       },
       logistics: {
@@ -766,7 +830,6 @@
             "WAYBILL_NUMBER": "WB-88741",
             "DISPATCH_DATE": "2026-09-24",
             "DESTINATION_HUB": "Berlin Regional Port",
-            "CARRIER_CODE": "CARRIER-DE-99",
             "CARGO_MANIFEST_ITEMS": [
               {
                 "CONTAINER_CODE": "CN-4012",
@@ -779,100 +842,53 @@
             ]
           }
         ],
-        recipe: {
-          "mapping": {
-            "item": {
-              "trackingId": "WAYBILL_NUMBER",
-              "date": "DISPATCH_DATE",
-              "destination": "DESTINATION_HUB"
+        selectSpec: {
+          WAYBILL_NUMBER: true,
+          DISPATCH_DATE: true,
+          DESTINATION_HUB: true,
+          CARGO_MANIFEST_ITEMS: {
+            CONTAINER_CODE: true,
+            WEIGHT_KG: true,
+            SEAL_IDENTIFIERS: {
+              SEAL_TAG: true
             }
-          },
-          "items": [
-            {
-              "list": "CARGO_MANIFEST_ITEMS",
-              "item": {
-                "container": "CONTAINER_CODE",
-                "weight": "WEIGHT_KG"
-              }
-            }
-          ]
+          }
+        },
+        renameMap: {
+          WAYBILL_NUMBER: "trackingId",
+          DISPATCH_DATE: "date",
+          DESTINATION_HUB: "destination",
+          CARGO_MANIFEST_ITEMS: "containers",
+          CONTAINER_CODE: "container",
+          WEIGHT_KG: "weight",
+          SEAL_IDENTIFIERS: "seals",
+          SEAL_TAG: "seal"
+        },
+        mapTemplate: {
+          tracking: "WAYBILL_NUMBER",
+          destination: "DESTINATION_HUB",
+          shipment: {
+            $from: "CARGO_MANIFEST_ITEMS",
+            containerId: "CONTAINER_CODE",
+            grossWeight: "WEIGHT_KG"
+          }
         }
       }
     };
 
-    // Reference implementation of node-json-transformer (Unified 3-in-1 Engine)
-    function transform(source, transformation) {
-      if (source == null || transformation == null) return null;
-      if (Array.isArray(source)) {
-        return source.map(item => transform(item, transformation));
-      }
-
-      let itemSpec = null;
-      if (transformation.mapping && typeof transformation.mapping.item === 'object') {
-        itemSpec = transformation.mapping.item;
-      } else if (transformation.item && typeof transformation.item === 'object') {
-        itemSpec = transformation.item;
-      }
-
-      const result = {};
-
-      if (itemSpec) {
-        for (const [outKey, srcKey] of Object.entries(itemSpec)) {
-          if (typeof srcKey === 'string') {
-            result[outKey] = getProperty(source, srcKey);
-          } else if (Array.isArray(srcKey)) {
-            result[outKey] = transformListRule(source, srcKey);
-          } else if (srcKey && typeof srcKey === 'object') {
-            result[outKey] = transform(source, srcKey);
-          }
-        }
-      }
-
-      for (const [outKey, rule] of Object.entries(transformation)) {
-        if (outKey === 'mapping' || outKey === 'item') continue;
-        if (Array.isArray(rule)) {
-          result[outKey] = transformListRule(source, rule);
-        } else if (rule && typeof rule === 'object' && rule.list && rule.item) {
-          result[outKey] = transformListRule(source, [rule]);
-        }
-      }
-
-      return result;
-    }
-
-    function transformListRule(source, ruleArray) {
-      if (!ruleArray || ruleArray.length === 0) return [];
-      const rule = ruleArray[0];
-      const rawList = getProperty(source, rule.list);
-      if (!rawList) return [];
-      const listItems = Array.isArray(rawList) ? rawList : [rawList];
-      return listItems.map(item => transform(item, { item: rule.item, ...rule }));
-    }
-
-    function getProperty(obj, key) {
-      if (!obj || typeof obj !== 'object') return undefined;
-      if (key in obj) return obj[key];
-      if (key.includes('.')) {
-        const parts = key.split('.');
-        let curr = obj;
-        for (const part of parts) {
-          if (curr == null) return undefined;
-          curr = curr[part];
-        }
-        return curr;
-      }
-      return undefined;
-    }
-
     // DOM Elements
     const txtRawInput = document.getElementById("txtRawInput");
-    const txtTransformRecipe = document.getElementById("txtTransformRecipe");
-    const preTransformOut = document.getElementById("preTransformOut");
+    const txtSelectSpec = document.getElementById("txtSelectSpec");
+    const preSelectOut = document.getElementById("preSelectOut");
+    const txtRenameSpec = document.getElementById("txtRenameSpec");
+    const preRenameOut = document.getElementById("preRenameOut");
+    const txtMapTemplate = document.getElementById("txtMapTemplate");
+    const preMapOut = document.getElementById("preMapOut");
     const tableContainer = document.getElementById("tableContainer");
     const statTotalLatency = document.getElementById("statTotalLatency");
     const statStatus = document.getElementById("statStatus");
 
-    // Stepper Tab Switching (3 Steps)
+    // Stepper Tab Switching
     document.querySelectorAll(".pipe-step").forEach(step => {
       step.addEventListener("click", () => {
         document.querySelectorAll(".pipe-step").forEach(s => s.classList.remove("active"));
@@ -888,15 +904,13 @@
       const p = presets[presetKey];
       if (!p) return;
       txtRawInput.value = JSON.stringify(p.raw, null, 2);
-      txtTransformRecipe.value = JSON.stringify(p.recipe, null, 2);
+      txtSelectSpec.value = JSON.stringify(p.selectSpec, null, 2);
+      txtRenameSpec.value = JSON.stringify(p.renameMap, null, 2);
+      txtMapTemplate.value = JSON.stringify(p.mapTemplate, null, 2);
       runPipeline();
     }
 
     // Preset button event listeners
-    document.getElementById("btnPresetDemo").addEventListener("click", (e) => {
-      setActivePreset(e.target);
-      loadPreset("demo");
-    });
     document.getElementById("btnPresetInvoice").addEventListener("click", (e) => {
       setActivePreset(e.target);
       loadPreset("invoice");
@@ -915,22 +929,52 @@
       target.classList.add("active");
     }
 
-    // Run node-json-transformer
-    function runStepTransform() {
+    // Step 2 Run: Select
+    function runStepSelect() {
       try {
         const raw = JSON.parse(txtRawInput.value);
-        const recipe = JSON.parse(txtTransformRecipe.value);
-        const res = transform(raw, recipe);
-        preTransformOut.textContent = JSON.stringify(res, null, 2);
+        const spec = JSON.parse(txtSelectSpec.value);
+        const res = selectJson(raw, spec);
+        preSelectOut.textContent = JSON.stringify(res, null, 2);
         return res;
       } catch (err) {
-        preTransformOut.textContent = `❌ ${err.message}`;
+        preSelectOut.textContent = `❌ ${err.message}`;
         return null;
       }
     }
-    document.getElementById("btnRunTransform").addEventListener("click", runStepTransform);
+    document.getElementById("btnRunSelect").addEventListener("click", runStepSelect);
 
-    // Render Table via json-to-tag-table CDN
+    // Step 3 Run: Rename
+    function runStepRename(inputData) {
+      try {
+        const data = inputData || runStepSelect() || JSON.parse(txtRawInput.value);
+        const keys = JSON.parse(txtRenameSpec.value);
+        const res = renameJsonKeys(data, keys);
+        preRenameOut.textContent = JSON.stringify(res, null, 2);
+        return res;
+      } catch (err) {
+        preRenameOut.textContent = `❌ ${err.message}`;
+        return null;
+      }
+    }
+    document.getElementById("btnRunRename").addEventListener("click", () => runStepRename());
+
+    // Step 4 Run: Map
+    function runStepMap() {
+      try {
+        const raw = JSON.parse(txtRawInput.value);
+        const template = JSON.parse(txtMapTemplate.value);
+        const res = mapJson(template, raw);
+        preMapOut.textContent = JSON.stringify(res, null, 2);
+        return res;
+      } catch (err) {
+        preMapOut.textContent = `❌ ${err.message}`;
+        return null;
+      }
+    }
+    document.getElementById("btnRunMap").addEventListener("click", runStepMap);
+
+    // Step 5: Render Table via json-to-tag-table CDN
     function renderTableUI(data) {
       tableContainer.innerHTML = "";
       if (!data) return;
@@ -951,6 +995,7 @@
             inSkeletonType: "tableSimple"
           });
         } else {
+          // Clean fallback table renderer if DOM container renderer is custom
           renderFallbackTable(data, tableContainer);
         }
       } catch (err) {
@@ -990,7 +1035,7 @@
     }
 
     document.getElementById("btnRenderTable").addEventListener("click", () => {
-      const current = runStepTransform();
+      const current = runStepRename();
       renderTableUI(current);
     });
 
@@ -999,8 +1044,10 @@
       const t0 = performance.now();
       statStatus.textContent = "Processing...";
 
-      const transformed = runStepTransform();
-      renderTableUI(transformed);
+      const selected = runStepSelect();
+      const renamed = runStepRename(selected);
+      runStepMap();
+      renderTableUI(renamed);
 
       const t1 = performance.now();
       statTotalLatency.textContent = `${(t1 - t0).toFixed(2)} ms`;
@@ -1016,14 +1063,10 @@
       } catch (err) { alert("Invalid JSON: " + err.message); }
     });
 
-    document.getElementById("btnFormatRecipe").addEventListener("click", () => {
-      try {
-        txtTransformRecipe.value = JSON.stringify(JSON.parse(txtTransformRecipe.value), null, 2);
-      } catch (err) { alert("Invalid JSON: " + err.message); }
-    });
-
     document.getElementById("btnCopyInput").addEventListener("click", () => copyToClipboard(txtRawInput.value));
-    document.getElementById("btnCopyTransform").addEventListener("click", () => copyToClipboard(preTransformOut.textContent));
+    document.getElementById("btnCopySelect").addEventListener("click", () => copyToClipboard(preSelectOut.textContent));
+    document.getElementById("btnCopyRename").addEventListener("click", () => copyToClipboard(preRenameOut.textContent));
+    document.getElementById("btnCopyMap").addEventListener("click", () => copyToClipboard(preMapOut.textContent));
 
     function copyToClipboard(text) {
       navigator.clipboard.writeText(text).then(() => alert("Copied to clipboard!"));

@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>select-json-by-json — Interactive Projection Playground</title>
+  <title>map-json-by-json — Interactive Contract Mapping Playground</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #070a13;
-      --card-bg: rgba(16, 24, 40, 0.8);
+      --bg: #090d16;
+      --card-bg: rgba(18, 25, 43, 0.75);
       --card-border: rgba(255, 255, 255, 0.08);
-      --accent: #6366f1;
-      --accent-glow: rgba(99, 102, 241, 0.25);
+      --accent: #10b981;
+      --accent-glow: rgba(16, 185, 129, 0.25);
+      --accent-2: #6366f1;
       --text: #f8fafc;
       --text-muted: #94a3b8;
-      --success: #38bdf8;
-      --code-bg: #030712;
+      --code-bg: #040711;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,14 +28,14 @@
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       min-height: 100vh;
       background-image: 
-        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.15), transparent),
-        radial-gradient(ellipse 60% 40% at 100% 50%, rgba(56, 189, 248, 0.08), transparent);
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(16, 185, 129, 0.15), transparent),
+        radial-gradient(ellipse 60% 40% at 0% 50%, rgba(99, 102, 241, 0.08), transparent);
     }
 
     /* Unified Story Nav */
     .story-global-nav {
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(7, 10, 19, 0.94);
+      background: rgba(9, 13, 22, 0.92);
       backdrop-filter: blur(8px);
       position: sticky;
       top: 0;
@@ -64,11 +64,11 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      background: rgba(99, 102, 241, 0.15);
-      color: #818cf8;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent);
       padding: 0.2rem 0.55rem;
       border-radius: 9999px;
-      border: 1px solid rgba(99, 102, 241, 0.3);
+      border: 1px solid rgba(16, 185, 129, 0.3);
     }
 
     .brand-title {
@@ -104,9 +104,9 @@
     }
 
     .story-nav-link.active {
-      color: #818cf8;
-      background: rgba(99, 102, 241, 0.15);
-      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: var(--accent);
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
     }
 
     .container {
@@ -126,9 +126,9 @@
       gap: 0.5rem;
       padding: 0.3rem 0.8rem;
       border-radius: 9999px;
-      background: rgba(99, 102, 241, 0.12);
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      color: #818cf8;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--accent);
       font-size: 0.8rem;
       font-weight: 600;
       margin-bottom: 0.5rem;
@@ -202,9 +202,9 @@
     }
 
     .btn-preset.active {
-      background: #6366f1;
-      color: #ffffff;
-      border-color: #6366f1;
+      background: #10b981;
+      color: #04101e;
+      border-color: #10b981;
       box-shadow: 0 0 12px var(--accent-glow);
     }
 
@@ -282,7 +282,7 @@
     }
 
     textarea:focus {
-      border-color: #6366f1;
+      border-color: #10b981;
       box-shadow: 0 0 0 2px var(--accent-glow);
     }
 
@@ -306,13 +306,15 @@
   <nav class="story-global-nav">
     <div class="story-nav-inner">
       <div class="story-nav-brand">
-        <span class="story-pill">Recipe 1</span>
+        <span class="story-pill">Recipe 3</span>
         <a href="index.html" class="brand-title">JSON Transform Suite</a>
       </div>
       <div class="story-nav-links">
         <a href="index.html" class="story-nav-link">🚀 Workbench</a>
-        <a href="1-select.html" class="story-nav-link active">⚡ 1. Select</a>
-        <a href="4-table.html" class="story-nav-link">📊 Table UI</a>
+        <a href="1-select.html" class="story-nav-link">⚡ 1. Select</a>
+        <a href="2-rename.html" class="story-nav-link">🏷️ 2. Rename</a>
+        <a href="3-map.html" class="story-nav-link active">🗺️ 3. Map</a>
+        <a href="4-table.html" class="story-nav-link">📊 4. Table UI</a>
         <a href="repos.html" class="story-nav-link">🌐 Repos &amp; Architecture</a>
       </div>
     </div>
@@ -321,11 +323,11 @@
   <div class="container">
     <header>
       <div class="badge">
-        <span>⚡</span> Step 1: Field Projection Playground
+        <span>🗺️</span> Step 3: Template-Driven Contract Mapping
       </div>
-      <h1>select-json-by-json</h1>
+      <h1>map-json-by-json</h1>
       <p class="subtitle">
-        Pick a sample dataset below. The source data and projection spec load instantly, and only selected properties are retained in real-time.
+        Select a sample dataset below. The target template contract acts as the source of truth, reshaping the source JSON in real-time.
       </p>
     </header>
 
@@ -338,40 +340,40 @@
         <button class="btn-preset" id="btnPresetLogistics">Logistics Waybills</button>
       </div>
       <div style="display: flex; gap: 0.5rem; align-items: center;">
-        <span id="statLatency" style="color: var(--success); font-size: 0.82rem; font-weight: 700;">Latency: 0.00 ms</span>
+        <span id="statLatency" style="color: var(--accent); font-size: 0.82rem; font-weight: 700;">Latency: 0.00 ms</span>
       </div>
     </div>
 
     <!-- 3-Column Live Playground -->
     <div class="playground-grid">
-      <!-- 1. Input Data -->
+      <!-- 1. Source Data -->
       <div class="card">
         <div class="card-header">
-          <span class="card-title"><span>📥</span> 1. Source JSON</span>
-          <button class="btn-action" id="btnCopyInput">📋 Copy</button>
+          <span class="card-title"><span>📥</span> 1. Source Data JSON</span>
+          <button class="btn-action" id="btnCopyData">📋 Copy</button>
         </div>
-        <textarea id="sourceInput" spellcheck="false"></textarea>
+        <textarea id="inputData" spellcheck="false"></textarea>
       </div>
 
-      <!-- 2. Projection Spec -->
+      <!-- 2. Target Template -->
       <div class="card">
         <div class="card-header">
-          <span class="card-title"><span>⚡</span> 2. Projection Spec (true = keep)</span>
-          <button class="btn-action" id="btnCopySpec">📋 Copy</button>
+          <span class="card-title"><span>🗺️</span> 2. Target Template Contract</span>
+          <button class="btn-action" id="btnCopyTemplate">📋 Copy</button>
         </div>
-        <textarea id="specInput" spellcheck="false"></textarea>
+        <textarea id="inputTemplate" spellcheck="false"></textarea>
       </div>
 
-      <!-- 3. Live Projected Result -->
+      <!-- 3. Live Reshaped Output -->
       <div class="card">
         <div class="card-header">
-          <span class="card-title" style="color: var(--success);"><span>✨</span> 3. Live Projected Output</span>
+          <span class="card-title" style="color: var(--accent);"><span>✨</span> 3. Live Reshaped Output</span>
           <button class="btn-action" id="btnCopyOutput">📋 Copy</button>
         </div>
-        <pre id="resultOutput" style="color: var(--success);"></pre>
+        <pre id="outputJson" style="color: #6ee7b7;"></pre>
         <div class="stats-footer">
-          <span>Mode: <strong>1:1 Projection</strong></span>
-          <span style="color: var(--success);">Instant Reactive Render</span>
+          <span>Mode: <strong>Template is Truth</strong></span>
+          <span style="color: var(--accent);">Instant Reactive Render</span>
         </div>
       </div>
     </div>
@@ -379,155 +381,128 @@
   </div>
 
   <script type="module">
-    let selectJson;
-    try {
-      const mod = await import("https://cdn.jsdelivr.net/gh/keshavsoft/select-json-by-json@main/docs/dist/min.js");
-      selectJson = mod.selectJson || globalThis.ks?.selectJson;
-    } catch (e) {
-      // Fallback
-      const isObject = v => v !== null && typeof v === "object";
-      const isPlainObject = v => isObject(v) && !Array.isArray(v);
-      const selectValue = (source, spec) => {
-        if (!isObject(source) || !isPlainObject(spec)) return undefined;
-        if (Array.isArray(source)) return source.map(item => selectValue(item, spec)).filter(item => item !== undefined);
-        const result = {};
-        Object.entries(spec).forEach(([key, rule]) => {
-          if (!(key in source)) return;
-          if (rule === true || rule === 1) { result[key] = source[key]; return; }
-          if (isPlainObject(rule)) {
-            const selected = selectValue(source[key], rule);
-            if (selected !== undefined) result[key] = selected;
-          }
-        });
-        return result;
-      };
-      selectJson = (source, spec) => selectValue(source, spec);
-    }
+    import { mapJson } from "https://cdn.jsdelivr.net/gh/keshavsoft/map-json-by-json@main/src/v1/map.js";
 
     const presets = {
       invoices: {
-        source: [
+        data: [
           {
             "INVOICE_NUMBER": 1001,
             "TRANSACTION_DATE": "2026-09-24",
             "CUSTOMER_NAME": "Alpha Global Industries",
-            "INTERNAL_AUDIT_CODE": "SEC-9912",
-            "TOTAL_TAX": 180.50,
             "ALL_INVENTORY_ENTRIES_LIST": [
               {
-                "PRODUCT_NAME": "Industrial Power Cable",
+                "STOCK_ITEM_NAME": "Industrial Power Cable",
                 "UNIT_RATE": 120.0,
-                "AMOUNT_VALUE": 6000.0,
-                "INTERNAL_REMARKS": "Dock 4 delivery",
+                "TOTAL_AMOUNT": 6000.0,
                 "BATCH_ALLOCATIONS_LIST": [
-                  { "BATCH_ID": "LOT-901", "QTY_VALUE": 50, "MFG_DATE": "2026-01-10" }
+                  { "BATCH_ID": "LOT-901", "ALLOCATED_QTY": 50 }
                 ]
               },
               {
-                "PRODUCT_NAME": "Reinforced Mesh Roll",
+                "STOCK_ITEM_NAME": "Reinforced Mesh Roll",
                 "UNIT_RATE": 45.5,
-                "AMOUNT_VALUE": 910.0,
-                "INTERNAL_REMARKS": "Pallet delivery",
+                "TOTAL_AMOUNT": 910.0,
                 "BATCH_ALLOCATIONS_LIST": [
-                  { "BATCH_ID": "LOT-330", "QTY_VALUE": 20, "MFG_DATE": "2026-02-15" }
+                  { "BATCH_ID": "LOT-330", "ALLOCATED_QTY": 20 }
                 ]
               }
             ]
           }
         ],
-        spec: {
-          "INVOICE_NUMBER": true,
-          "TRANSACTION_DATE": true,
-          "CUSTOMER_NAME": true,
-          "ALL_INVENTORY_ENTRIES_LIST": {
-            "PRODUCT_NAME": true,
-            "AMOUNT_VALUE": true,
-            "BATCH_ALLOCATIONS_LIST": {
-              "BATCH_ID": true,
-              "QTY_VALUE": true
+        template: {
+          invoice: "INVOICE_NUMBER",
+          date: "TRANSACTION_DATE",
+          client: "CUSTOMER_NAME",
+          lineItems: {
+            $from: "ALL_INVENTORY_ENTRIES_LIST",
+            product: "STOCK_ITEM_NAME",
+            rate: "UNIT_RATE",
+            total: "TOTAL_AMOUNT",
+            lots: {
+              $from: "BATCH_ALLOCATIONS_LIST",
+              lotId: "BATCH_ID",
+              allocated: "ALLOCATED_QTY"
             }
           }
         }
       },
       orders: {
-        source: [
+        data: [
           {
             "ORDER_IDENTIFIER": "ORD-5542",
             "PURCHASE_TIMESTAMP": "2026-09-24T10:15:00Z",
             "BUYER_FULL_NAME": "Sophia Martinez",
-            "PAYMENT_GATEWAY_TOKEN": "TOK_XYZ_881",
             "PURCHASED_ITEMS_COLLECTION": [
               {
                 "SKU_CODE": "SKU-990",
                 "ITEM_LABEL": "Wireless Sensor Node",
                 "PRICE_PER_UNIT": 85.0,
-                "ORDERED_QUANTITY": 4,
-                "WAREHOUSE_AISLE": "B-12"
+                "ORDERED_QUANTITY": 4
               }
             ]
           }
         ],
-        spec: {
-          "ORDER_IDENTIFIER": true,
-          "PURCHASE_TIMESTAMP": true,
-          "BUYER_FULL_NAME": true,
-          "PURCHASED_ITEMS_COLLECTION": {
-            "SKU_CODE": true,
-            "ITEM_LABEL": true,
-            "PRICE_PER_UNIT": true
+        template: {
+          id: "ORDER_IDENTIFIER",
+          timestamp: "PURCHASE_TIMESTAMP",
+          customer: "BUYER_FULL_NAME",
+          cart: {
+            $from: "PURCHASED_ITEMS_COLLECTION",
+            sku: "SKU_CODE",
+            label: "ITEM_LABEL",
+            unitPrice: "PRICE_PER_UNIT",
+            qty: "ORDERED_QUANTITY"
           }
         }
       },
       logistics: {
-        source: [
+        data: [
           {
             "WAYBILL_NUMBER": "WB-88190",
             "DISPATCH_DATE": "2026-09-24",
             "DESTINATION_HUB": "Central Distribution Hub",
-            "CARRIER_INTERNAL_ID": "TRK-0092",
             "CARGO_MANIFEST_ITEMS": [
               {
                 "CONTAINER_CODE": "C-901",
                 "WEIGHT_KG": 4200,
-                "INTERNAL_INSPECTION_FLAG": true,
                 "SEAL_IDENTIFIERS": { "SEAL_TAG": "SL-9941" }
               }
             ]
           }
         ],
-        spec: {
-          "WAYBILL_NUMBER": true,
-          "DISPATCH_DATE": true,
-          "DESTINATION_HUB": true,
-          "CARGO_MANIFEST_ITEMS": {
-            "CONTAINER_CODE": true,
-            "WEIGHT_KG": true,
-            "SEAL_IDENTIFIERS": {
-              "SEAL_TAG": true
-            }
+        template: {
+          trackingNo: "WAYBILL_NUMBER",
+          date: "DISPATCH_DATE",
+          destination: "DESTINATION_HUB",
+          manifest: {
+            $from: "CARGO_MANIFEST_ITEMS",
+            code: "CONTAINER_CODE",
+            weight: "WEIGHT_KG",
+            seal: "SEAL_IDENTIFIERS.SEAL_TAG"
           }
         }
       }
     };
 
-    const sourceInput = document.getElementById("sourceInput");
-    const specInput = document.getElementById("specInput");
-    const resultOutput = document.getElementById("resultOutput");
+    const inputDataEl = document.getElementById("inputData");
+    const inputTemplateEl = document.getElementById("inputTemplate");
+    const outputJsonEl = document.getElementById("outputJson");
     const statLatency = document.getElementById("statLatency");
 
-    function executeProjection() {
+    function executeTransform() {
       try {
-        const source = JSON.parse(sourceInput.value);
-        const spec = JSON.parse(specInput.value);
+        const data = JSON.parse(inputDataEl.value);
+        const template = JSON.parse(inputTemplateEl.value);
 
         const t0 = performance.now();
-        const result = selectJson(source, spec);
+        const result = mapJson(template, data);
         const t1 = performance.now();
 
-        resultOutput.textContent = JSON.stringify(result, null, 2);
+        outputJsonEl.textContent = JSON.stringify(result, null, 2);
         statLatency.textContent = `Latency: ${(t1 - t0).toFixed(2)} ms`;
       } catch (err) {
-        resultOutput.textContent = `❌ ${err.message}`;
+        outputJsonEl.textContent = `❌ ${err.message}`;
         statLatency.textContent = "-";
       }
     }
@@ -535,9 +510,9 @@
     function loadPreset(key) {
       const p = presets[key];
       if (!p) return;
-      sourceInput.value = JSON.stringify(p.source, null, 2);
-      specInput.value = JSON.stringify(p.spec, null, 2);
-      executeProjection();
+      inputDataEl.value = JSON.stringify(p.data, null, 2);
+      inputTemplateEl.value = JSON.stringify(p.template, null, 2);
+      executeTransform();
     }
 
     const presetBtns = [
@@ -555,13 +530,13 @@
     });
 
     // Real-time reactive updates
-    sourceInput.addEventListener("input", executeProjection);
-    specInput.addEventListener("input", executeProjection);
+    inputDataEl.addEventListener("input", executeTransform);
+    inputTemplateEl.addEventListener("input", executeTransform);
 
     // Copy buttons
-    document.getElementById("btnCopyInput").addEventListener("click", () => copyText(sourceInput.value));
-    document.getElementById("btnCopySpec").addEventListener("click", () => copyText(specInput.value));
-    document.getElementById("btnCopyOutput").addEventListener("click", () => copyText(resultOutput.textContent));
+    document.getElementById("btnCopyData").addEventListener("click", () => copyText(inputDataEl.value));
+    document.getElementById("btnCopyTemplate").addEventListener("click", () => copyText(inputTemplateEl.value));
+    document.getElementById("btnCopyOutput").addEventListener("click", () => copyText(outputJsonEl.textContent));
 
     function copyText(txt) {
       navigator.clipboard.writeText(txt).then(() => alert("Copied to clipboard!"));
